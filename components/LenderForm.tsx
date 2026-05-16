@@ -442,7 +442,7 @@ export default function LenderForm({ lender, mode }: Props) {
             />
           </div>
           <div>
-            <label className="label">Suleman's Notes</label>
+            <label className="label">Suleman&apos;s Notes</label>
             <textarea
               className="input min-h-[100px] resize-y"
               placeholder="BDM relationships, policy quirks, appetite nuances, things to watch…"
