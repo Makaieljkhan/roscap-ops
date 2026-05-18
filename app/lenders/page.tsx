@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 import { revalidatePath } from 'next/cache';
+import DeleteLenderButton from '@/components/DeleteLenderButton';
 import type { Lender } from '@/types';
 import { LENDER_STATUS_LABELS, LENDER_STATUS_COLORS } from '@/types';
 
@@ -157,18 +158,11 @@ export default async function LendersPage() {
                       >
                         Edit
                       </Link>
-                      <form action={deleteLender}>
-                        <input type="hidden" name="id" value={lender.id} />
-                        <button
-                          type="submit"
-                          className="text-xs text-red-400 hover:text-red-600"
-                          onClick={(e) => {
-                            if (!confirm(`Delete "${lender.lender_name}"?`)) e.preventDefault();
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </form>
+                      <DeleteLenderButton
+                        lenderId={lender.id}
+                        lenderName={lender.lender_name}
+                        deleteAction={deleteLender}
+                      />
                     </div>
                   </td>
                 </tr>
