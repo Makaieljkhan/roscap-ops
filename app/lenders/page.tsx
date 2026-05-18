@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache';
 import type { Lender } from '@/types';
 import { LENDER_STATUS_LABELS, LENDER_STATUS_COLORS } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 async function getLenders(): Promise<Lender[]> {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
