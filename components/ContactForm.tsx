@@ -121,7 +121,7 @@ export default function ContactForm({ mode, initialData, onSuccess, onCancel }: 
 
       {/* Identity */}
       <section>
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">Identity</h3>
+        <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-4">Identity</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="label" htmlFor="full_name">Full Name *</label>
@@ -157,7 +157,7 @@ export default function ContactForm({ mode, initialData, onSuccess, onCancel }: 
 
       {/* Relationship */}
       <section>
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">Relationship</h3>
+        <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-4">Relationship</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="label" htmlFor="relationship_health">Relationship Health</label>
@@ -193,7 +193,7 @@ export default function ContactForm({ mode, initialData, onSuccess, onCancel }: 
 
       {/* Last Deal */}
       <section>
-        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">Last Deal</h3>
+        <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-4">Last Deal</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="label" htmlFor="last_deal_type">Deal Type</label>
@@ -214,7 +214,7 @@ export default function ContactForm({ mode, initialData, onSuccess, onCancel }: 
         <button
           type="submit"
           disabled={loading}
-          className="bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[#1B3A35] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Saving…' : mode === 'create' ? 'Add Contact' : 'Save Changes'}
         </button>

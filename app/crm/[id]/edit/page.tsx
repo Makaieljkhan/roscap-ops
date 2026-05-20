@@ -53,10 +53,10 @@ export default function EditContactPage({ params }: { params: { id: string } }) 
         <Link href="/crm" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
           ← Contacts
         </Link>
-        <h1 className="text-2xl font-semibold text-gray-900 mt-2">Edit Contact</h1>
+        <h1 className="text-2xl font-serif font-semibold text-[#1B3A35] mt-2">Edit Contact</h1>
         <p className="text-sm text-gray-500 mt-1">{contact.full_name}</p>
       </div>
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
+      <div className="bg-white border border-gray-100 shadow-sm rounded-xl p-6">
         <ContactForm
           mode="edit"
           initialData={initialData}

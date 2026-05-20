@@ -72,7 +72,7 @@ export default function DraftingPage() {
     <div className="p-8 max-w-5xl">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">Deal Drafting Engine</h1>
+        <h1 className="text-2xl font-serif font-semibold text-[#1B3A35]">Deal Drafting Engine</h1>
         <p className="text-sm text-gray-500 mt-1">
           Generate professional email drafts using deal context and AI-powered templates.
         </p>
@@ -82,9 +82,7 @@ export default function DraftingPage() {
         {/* Left — Inputs */}
         <div className="space-y-5">
           <div>
-            <label className="label" htmlFor="deal-tier">
-              Deal Tier
-            </label>
+            <label className="label" htmlFor="deal-tier">Deal Tier</label>
             <select
               id="deal-tier"
               className="input"
@@ -93,17 +91,13 @@ export default function DraftingPage() {
             >
               <option value="">Select deal tier…</option>
               {DEAL_TIERS.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.label}
-                </option>
+                <option key={t.value} value={t.value}>{t.label}</option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="label" htmlFor="email-type">
-              Email Type
-            </label>
+            <label className="label" htmlFor="email-type">Email Type</label>
             <select
               id="email-type"
               className="input"
@@ -112,17 +106,13 @@ export default function DraftingPage() {
             >
               <option value="">Select email type…</option>
               {EMAIL_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.label}
-                </option>
+                <option key={t.value} value={t.value}>{t.label}</option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="label" htmlFor="deal-context">
-              Deal Context
-            </label>
+            <label className="label" htmlFor="deal-context">Deal Context</label>
             <textarea
               id="deal-context"
               className="input resize-none"
@@ -142,7 +132,7 @@ export default function DraftingPage() {
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="w-full bg-gray-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-[#1B3A35] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
@@ -165,7 +155,7 @@ export default function DraftingPage() {
             {draft && (
               <button
                 onClick={handleCopy}
-                className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors px-2 py-1 rounded-md hover:bg-gray-100"
+                className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-[#1B3A35] transition-colors px-2 py-1 rounded-md hover:bg-[#1B3A35]/5"
               >
                 {copied ? (
                   <>
@@ -182,7 +172,7 @@ export default function DraftingPage() {
             )}
           </div>
 
-          <div className="flex-1 min-h-[420px] bg-white border border-gray-200 rounded-xl p-5 text-sm text-gray-800 leading-relaxed overflow-y-auto">
+          <div className="flex-1 min-h-[420px] bg-white border border-gray-100 shadow-sm rounded-xl p-5 text-sm text-[#2C2C2C] leading-relaxed overflow-y-auto">
             {loading ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-3">
                 <IconSpinner className="w-6 h-6 animate-spin" />

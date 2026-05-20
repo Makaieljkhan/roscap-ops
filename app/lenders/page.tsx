@@ -13,7 +13,7 @@ async function getLenders(): Promise<Lender[]> {
     .from('lenders')
     .select('*')
     .order('lender_name');
-if (error) throw new Error(error.message);
+  if (error) throw new Error(error.message);
   return data ?? [];
 }
 
@@ -39,14 +39,14 @@ export default async function LendersPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Lenders</h1>
+          <h1 className="text-2xl font-serif font-semibold text-[#1B3A35]">Lenders</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             {lenders.length} lender{lenders.length !== 1 ? 's' : ''} in database
           </p>
         </div>
         <Link
           href="/lenders/new"
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+          className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
         >
           + Add Lender
         </Link>
@@ -59,11 +59,11 @@ export default async function LendersPage() {
       )}
 
       {!fetchError && lenders.length === 0 && (
-        <div className="bg-white rounded-xl border border-dashed border-gray-200 p-16 text-center">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm border-dashed p-16 text-center">
           <p className="text-gray-400 text-sm mb-4">No lenders yet.</p>
           <Link
             href="/lenders/new"
-            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+            className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
           >
             Add your first lender
           </Link>
@@ -71,25 +71,25 @@ export default async function LendersPage() {
       )}
 
       {lenders.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Lender</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Asset Classes</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Deal Size</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">LTV</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Rate</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Geography</th>
+              <tr className="bg-[#1B3A35]">
+                <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Lender</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Asset Classes</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Deal Size</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">LTV</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Rate</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Geography</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {lenders.map((lender) => (
-                <tr key={lender.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={lender.id} className="hover:bg-green-50 transition-colors duration-100">
                   <td className="px-4 py-3">
-                    <p className="font-medium text-gray-900">{lender.lender_name}</p>
+                    <p className="font-medium text-[#2C2C2C]">{lender.lender_name}</p>
                     {lender.common_name && lender.common_name !== lender.lender_name && (
                       <p className="text-xs text-gray-400 mt-0.5">{lender.common_name}</p>
                     )}
@@ -140,9 +140,7 @@ export default async function LendersPage() {
                   </td>
                   <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                     {lender.rate_range_low != null || lender.rate_range_high != null ? (
-                      <>
-                        {lender.rate_range_low ?? '—'}–{lender.rate_range_high ?? '—'}%
-                      </>
+                      <>{lender.rate_range_low ?? '—'}–{lender.rate_range_high ?? '—'}%</>
                     ) : (
                       <span className="text-gray-300">—</span>
                     )}
@@ -154,7 +152,7 @@ export default async function LendersPage() {
                     <div className="flex items-center justify-end gap-3">
                       <Link
                         href={`/lenders/${lender.id}/edit`}
-                        className="text-xs text-gray-500 hover:text-gray-900 hover:underline underline-offset-2"
+                        className="text-xs text-gray-400 hover:text-[#1B3A35] hover:underline underline-offset-2 transition-colors"
                       >
                         Edit
                       </Link>
@@ -176,7 +174,7 @@ export default async function LendersPage() {
 }
 
 function formatMoney(n: number): string {
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}k`;
-  return `$${n}`;
+  if (n >= 1_000_000) return `£${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `£${(n / 1_000).toFixed(0)}k`;
+  return `£${n}`;
 }

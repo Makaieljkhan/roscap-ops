@@ -40,7 +40,7 @@ const PRESETS = [
   },
   {
     label: 'Standard',
-    color: 'bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100',
+    color: 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100',
     data: {
       name: 'Sarah Mitchell',
       email: 'sarah.mitchell@example.com',
@@ -68,7 +68,7 @@ const PRESETS = [
   },
   {
     label: 'Disqualified',
-    color: 'bg-gray-900 border-gray-700 text-white hover:bg-gray-800',
+    color: 'bg-[#1B3A35] border-[#1B3A35] text-white hover:bg-[#2a5248]',
     data: {
       name: 'Alex Kumar',
       email: 'alex.kumar@example.com',
@@ -126,18 +126,16 @@ export default function TestFormPage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-1">
-          <Link href="/inbound" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
-            ← Inbound Leads
-          </Link>
-        </div>
-        <h1 className="text-2xl font-semibold text-gray-900">Test Form</h1>
+        <Link href="/inbound" className="text-sm text-gray-400 hover:text-[#1B3A35] transition-colors">
+          ← Inbound Leads
+        </Link>
+        <h1 className="text-2xl font-serif font-semibold text-[#1B3A35] mt-2">Test Form</h1>
         <p className="text-sm text-gray-500 mt-1">Submit a dummy lead to test scoring, AI draft generation, and the inbound pipeline.</p>
       </div>
 
       {/* Preset buttons */}
       <div className="mb-6">
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Quick Fill</p>
+        <p className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Quick Fill</p>
         <div className="flex flex-wrap gap-2">
           {PRESETS.map(preset => (
             <button
@@ -159,10 +157,9 @@ export default function TestFormPage() {
         </div>
       </div>
 
-      {/* Success / Error banner */}
       {result?.success && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 text-sm text-green-800">
-          Lead submitted successfully — priority scored as <strong className="capitalize">{result.priority}</strong>.{' '}
+        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-6 text-sm text-emerald-800">
+          Lead submitted — priority scored as <strong className="capitalize">{result.priority}</strong>.{' '}
           <Link href="/inbound" className="underline underline-offset-2">View in Inbound Leads →</Link>
         </div>
       )}
@@ -172,7 +169,7 @@ export default function TestFormPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5 bg-white border border-gray-200 rounded-xl p-6">
+      <form onSubmit={handleSubmit} className="space-y-5 bg-white border border-gray-100 shadow-sm rounded-xl p-6">
         <div className="grid grid-cols-2 gap-5">
           <div>
             <label className="label" htmlFor="name">Name *</label>
@@ -233,7 +230,7 @@ export default function TestFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-gray-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-[#1B3A35] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Submitting…' : 'Submit Lead'}
         </button>

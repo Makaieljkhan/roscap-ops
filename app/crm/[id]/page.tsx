@@ -98,7 +98,7 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
           <button onClick={() => setEditing(false)} className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
             ← Cancel Edit
           </button>
-          <h1 className="text-2xl font-semibold text-gray-900 mt-2">Edit Contact</h1>
+          <h1 className="text-2xl font-serif font-semibold text-[#1B3A35] mt-2">Edit Contact</h1>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-6">
           <ContactForm
@@ -120,7 +120,7 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
           <Link href="/crm" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
             ← Contacts
           </Link>
-          <h1 className="text-2xl font-semibold text-gray-900 mt-2">{contact.full_name}</h1>
+          <h1 className="text-2xl font-serif font-semibold text-[#1B3A35] mt-2">{contact.full_name}</h1>
           <div className="flex items-center gap-2 mt-2 flex-wrap">
             {contact.company && <span className="text-sm text-gray-500">{contact.company}</span>}
             {contact.contact_type && (
@@ -138,7 +138,7 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={() => setEditing(true)}
-            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+            className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
           >
             Edit
           </button>

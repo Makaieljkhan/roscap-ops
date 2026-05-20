@@ -35,16 +35,16 @@ interface Reminder {
 }
 
 const HEALTH_STYLES: Record<string, string> = {
-  active: 'bg-green-100 text-green-700',
-  warm: 'bg-yellow-100 text-yellow-700',
+  active: 'bg-emerald-100 text-emerald-700',
+  warm: 'bg-amber-100 text-amber-700',
   at_risk: 'bg-orange-100 text-orange-700',
-  dormant: 'bg-gray-100 text-gray-600',
+  dormant: 'bg-gray-100 text-gray-500',
 };
 
 const TYPE_STYLES: Record<string, string> = {
-  client: 'bg-blue-100 text-blue-700',
-  introducer: 'bg-purple-100 text-purple-700',
-  lender: 'bg-orange-100 text-orange-700',
+  client: 'bg-indigo-100 text-indigo-700',
+  introducer: 'bg-green-100 text-green-700',
+  lender: 'bg-amber-100 text-amber-700',
 };
 
 const REMINDER_STYLES: Record<string, string> = {
@@ -77,7 +77,7 @@ function Row({ label, value }: { label: string; value?: string | null }) {
   return (
     <div className="flex gap-3 text-sm">
       <dt className="text-gray-400 w-28 flex-shrink-0">{label}</dt>
-      <dd className="text-gray-800">{value || <span className="text-gray-300">—</span>}</dd>
+      <dd className="text-[#2C2C2C]">{value || <span className="text-gray-300">—</span>}</dd>
     </div>
   );
 }
@@ -182,12 +182,12 @@ export default function CRMPage() {
       <div className="flex-1 min-w-0 p-8 overflow-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">CRM</h1>
+            <h1 className="text-2xl font-serif font-semibold text-[#1B3A35]">CRM</h1>
             <p className="text-sm text-gray-500 mt-0.5">{contacts.length} contact{contacts.length !== 1 ? 's' : ''}</p>
           </div>
           <Link
             href="/crm/new"
-            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+            className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
           >
             + Add Contact
           </Link>
@@ -214,10 +214,10 @@ export default function CRMPage() {
         {loadingContacts && <div className="text-sm text-gray-400 py-12 text-center">Loading…</div>}
 
         {!loadingContacts && filteredContacts.length === 0 && (
-          <div className="bg-white rounded-xl border border-dashed border-gray-200 p-16 text-center">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm border-dashed p-16 text-center">
             <p className="text-gray-400 text-sm mb-4">{search ? 'No contacts match your search.' : 'No contacts yet.'}</p>
             {!search && (
-              <Link href="/crm/new" className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+              <Link href="/crm/new" className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200">
                 Add your first contact
               </Link>
             )}
@@ -225,16 +225,16 @@ export default function CRMPage() {
         )}
 
         {!loadingContacts && filteredContacts.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Name</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Company</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Type</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Health</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Last Contact</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Last Deal</th>
+                <tr className="bg-[#1B3A35]">
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Name</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Company</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Type</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Health</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Last Contact</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Last Deal</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -242,10 +242,10 @@ export default function CRMPage() {
                   <tr
                     key={c.id}
                     onClick={() => handleSelectContact(c)}
-                    className={`hover:bg-gray-50 transition-colors cursor-pointer ${selected?.id === c.id ? 'bg-blue-50 hover:bg-blue-50' : ''}`}
+                    className={`hover:bg-green-50 transition-colors duration-100 cursor-pointer ${selected?.id === c.id ? 'bg-green-50' : ''}`}
                   >
                     <td className="px-4 py-3">
-                      <span className="font-medium text-gray-900">{c.full_name}</span>
+                      <span className="font-medium text-[#2C2C2C]">{c.full_name}</span>
                       {c.preferred_name && c.preferred_name !== c.full_name && (
                         <p className="text-xs text-gray-400 mt-0.5">{c.preferred_name}</p>
                       )}
@@ -278,10 +278,9 @@ export default function CRMPage() {
       {/* ── Right Panel: Contact Detail or Reminders ── */}
       {selected ? (
         <aside className="w-[400px] flex-shrink-0 border-l border-gray-200 bg-white overflow-y-auto flex flex-col">
-          {/* Panel header */}
           <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4 flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-semibold text-gray-900 truncate">{selected.full_name}</p>
+              <p className="font-semibold text-[#2C2C2C] truncate">{selected.full_name}</p>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 {selected.company && <span className="text-xs text-gray-400">{selected.company}</span>}
                 {selected.contact_type && (
@@ -312,7 +311,7 @@ export default function CRMPage() {
             <div className="flex items-center gap-2">
               <Link
                 href={`/crm/${selected.id}/edit`}
-                className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+                className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
               >
                 Edit
               </Link>
@@ -343,9 +342,8 @@ export default function CRMPage() {
               )}
             </div>
 
-            {/* Contact Details */}
             <section>
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Contact Details</h3>
+              <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Contact Details</h3>
               <dl className="space-y-2">
                 <Row label="Email" value={selected.email} />
                 <Row label="Phone" value={selected.phone} />
@@ -355,9 +353,8 @@ export default function CRMPage() {
               </dl>
             </section>
 
-            {/* Last Deal */}
             <section>
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Last Deal</h3>
+              <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Last Deal</h3>
               <dl className="space-y-2">
                 <Row label="Type" value={selected.last_deal_type} />
                 <Row label="Size" value={formatMoney(selected.last_deal_size)} />
@@ -365,18 +362,16 @@ export default function CRMPage() {
               </dl>
             </section>
 
-            {/* Pipeline Note */}
             {selected.pipeline_note && (
               <section>
-                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Pipeline Note</h3>
+                <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-2">Pipeline Note</h3>
                 <p className="text-sm text-gray-700 leading-relaxed">{selected.pipeline_note}</p>
               </section>
             )}
 
-            {/* Notes */}
             {selected.notes && (
               <section>
-                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Notes</h3>
+                <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-2">Notes</h3>
                 <p className="text-sm text-gray-700 leading-relaxed">{selected.notes}</p>
               </section>
             )}
@@ -392,13 +387,13 @@ export default function CRMPage() {
           <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="font-semibold text-gray-900 text-sm">Reminders</p>
+                <p className="font-semibold text-[#2C2C2C] text-sm">Reminders</p>
                 <p className="text-xs text-gray-400 mt-0.5">{reminders.length} pending</p>
               </div>
               <button
                 onClick={handleGenerate}
                 disabled={generating}
-                className="text-xs font-medium bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
+                className="text-xs font-medium bg-[#1B3A35] text-white px-3 py-1.5 rounded-lg hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200 disabled:opacity-50"
               >
                 {generating ? 'Running…' : 'Generate'}
               </button>
@@ -410,13 +405,11 @@ export default function CRMPage() {
 
           <div className="flex-1 px-4 py-4 space-y-3">
             {loadingReminders && <p className="text-xs text-gray-400 text-center py-8">Loading…</p>}
-
             {!loadingReminders && reminders.length === 0 && (
               <p className="text-xs text-gray-400 text-center py-8">
                 No pending reminders. Click Generate to check for new ones.
               </p>
             )}
-
             {reminders.map(r => (
               <ReminderCard key={r.id} reminder={r} onDismiss={handleDismiss} />
             ))}
@@ -435,7 +428,7 @@ function ReminderCard({ reminder, onDismiss }: { reminder: Reminder; onDismiss: 
     <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-gray-900 truncate">{contactName}</p>
+          <p className="text-sm font-medium text-[#2C2C2C] truncate">{contactName}</p>
           {reminder.contacts?.company && (
             <p className="text-xs text-gray-400 truncate">{reminder.contacts.company}</p>
           )}
@@ -468,7 +461,7 @@ function ReminderCard({ reminder, onDismiss }: { reminder: Reminder; onDismiss: 
           {reminder.ai_draft_message.length > 120 && (
             <button
               onClick={() => setExpanded(e => !e)}
-              className="text-xs text-gray-400 hover:text-gray-600 mt-1 transition-colors"
+              className="text-xs text-gray-400 hover:text-[#1B3A35] mt-1 transition-colors"
             >
               {expanded ? 'Show less' : 'Show more'}
             </button>

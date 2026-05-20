@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git config *)",
+      "Bash(git commit *)",
+      "Bash(npm run *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\makai\\\\OneDrive\\\\Desktop\\\\roscap-ops\" -Force)",
+      "Bash(Select-Object -Property Name, PSIsContainer)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(curl *)",
+      "Bash(npm install *)",
+      "Bash(npx kill-port *)",
+      "Bash(npx tsc *)"
+    ]
+  }
+}

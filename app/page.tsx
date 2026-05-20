@@ -1,305 +1,226 @@
-'use client';
-
-import { useState } from 'react';
 import Link from 'next/link';
-import type { LenderMatchResponse, LenderMatchResult } from '@/types';
-import { LENDER_STATUS_LABELS, LENDER_STATUS_COLORS, COMMON_ASSET_CLASSES } from '@/types';
+import { createServerSupabaseClient } from '@/lib/supabase-server';
 
-const DEFAULT_FORM = {
-  deal_size: '',
-  asset_class: '',
-  ltv: '',
-  geography: '',
-  additional_notes: '',
-};
+async function getStats() {
+  const supabase = createServerSupabaseClient();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-export default function DashboardPage() {
-  const [form, setForm] = useState(DEFAULT_FORM);
-  const [result, setResult] = useState<LenderMatchResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  try {
+    const [
+      { count: lenders },
+      { count: contacts },
+      { count: newLeads },
+      { count: reminders },
+    ] = await Promise.all([
+      supabase.from('lenders').select('*', { count: 'exact', head: true }),
+      supabase.from('contacts').select('*', { count: 'exact', head: true }),
+      supabase.from('inbound_leads').select('*', { count: 'exact', head: true }).gte('created_at', today.toISOString()),
+      supabase.from('reminders').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    ]);
 
-  async function handleMatch(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setResult(null);
-    setLoading(true);
-
-    const payload = {
-      deal_size: Number(form.deal_size),
-      asset_class: form.asset_class,
-      ltv: Number(form.ltv),
-      geography: form.geography || undefined,
-      additional_notes: form.additional_notes || undefined,
+    return {
+      lenders: lenders ?? 0,
+      contacts: contacts ?? 0,
+      newLeads: newLeads ?? 0,
+      reminders: reminders ?? 0,
     };
-
-    try {
-      const res = await fetch('/api/lender-match', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Matching failed');
-      setResult(data);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
-    } finally {
-      setLoading(false);
-    }
+  } catch {
+    return { lenders: 0, contacts: 0, newLeads: 0, reminders: 0 };
   }
+}
+
+export default async function DashboardPage() {
+  const stats = await getStats();
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Lender Match</h1>
-        <p className="text-gray-500 mt-1 text-sm">
-          Enter deal parameters and let AI identify suitable lenders from the database.
-        </p>
+    <div className="p-8 max-w-5xl">
+      {/* Header */}
+      <div className="mb-10">
+        <h1 className="text-3xl font-serif font-semibold text-[#1B3A35]">Roscap Ops</h1>
+        <p className="text-sm text-gray-500 mt-1">Internal Operations Platform</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Form */}
-        <div>
-          <form onSubmit={handleMatch} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
-            <div>
-              <label className="label">Deal Size ($)</label>
-              <input
-                type="number"
-                required
-                min={1}
-                className="input"
-                placeholder="e.g. 5000000"
-                value={form.deal_size}
-                onChange={(e) => setForm({ ...form, deal_size: e.target.value })}
-              />
-            </div>
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+        <StatCard title="Total Lenders" value={stats.lenders} icon={IconLenders} />
+        <StatCard title="Total Contacts" value={stats.contacts} icon={IconContacts} />
+        <StatCard title="New Leads Today" value={stats.newLeads} icon={IconLeads} />
+        <StatCard title="Pending Reminders" value={stats.reminders} icon={IconReminders} />
+      </div>
 
-            <div>
-              <label className="label">Asset Class</label>
-              <div className="flex gap-2">
-                <input
-                  required
-                  className="input flex-1"
-                  placeholder="e.g. Residential, Construction…"
-                  list="asset-class-list"
-                  value={form.asset_class}
-                  onChange={(e) => setForm({ ...form, asset_class: e.target.value })}
-                />
-                <datalist id="asset-class-list">
-                  {COMMON_ASSET_CLASSES.map((c) => <option key={c} value={c} />)}
-                </datalist>
-              </div>
-            </div>
-
-            <div>
-              <label className="label">LTV (%)</label>
-              <input
-                type="number"
-                required
-                min={1}
-                max={100}
-                step={0.5}
-                className="input"
-                placeholder="e.g. 65"
-                value={form.ltv}
-                onChange={(e) => setForm({ ...form, ltv: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="label">Geography</label>
-              <input
-                className="input"
-                placeholder="e.g. NSW, Eastern Seaboard, National"
-                value={form.geography}
-                onChange={(e) => setForm({ ...form, geography: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="label">Additional Notes</label>
-              <textarea
-                className="input min-h-[80px] resize-y"
-                placeholder="Borrower profile, exit strategy, timing, special circumstances…"
-                value={form.additional_notes}
-                onChange={(e) => setForm({ ...form, additional_notes: e.target.value })}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gray-900 text-white py-2.5 px-4 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {loading ? 'Analysing…' : 'Find Matching Lenders'}
-            </button>
-          </form>
-
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <Link
-              href="/lenders"
-              className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              View All Lenders
-            </Link>
-            <Link
-              href="/lenders/new"
-              className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2.5 px-4 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              Add Lender
-            </Link>
-          </div>
+      {/* Quick Actions */}
+      <div className="mb-10">
+        <h2 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <QuickAction
+            href="/lenders/new"
+            label="Add Lender"
+            description="Add a new lender to the intelligence database"
+            icon={IconLenders}
+          />
+          <QuickAction
+            href="/drafting"
+            label="New Draft"
+            description="Generate a professional email draft"
+            icon={IconDraft}
+          />
+          <QuickAction
+            href="/inbound"
+            label="View Leads"
+            description="Review and action inbound enquiries"
+            icon={IconInbound}
+          />
+          <QuickAction
+            href="/crm"
+            label="View Contacts"
+            description="Manage your CRM and relationship reminders"
+            icon={IconCRM}
+          />
         </div>
+      </div>
 
-        {/* Results */}
-        <div>
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">
-              {error}
-            </div>
-          )}
-
-          {loading && (
-            <div className="bg-white rounded-xl border border-gray-200 p-10 flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-8 h-8 border-2 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-gray-500">Analysing lenders…</p>
-              </div>
-            </div>
-          )}
-
-          {result && !loading && (
-            <div className="space-y-4">
-              {result.summary && (
-                <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-800">
-                  {result.summary}
-                </div>
-              )}
-              {result.matches.length === 0 && (
-                <div className="bg-white rounded-xl border border-gray-200 p-6 text-sm text-gray-500 text-center">
-                  No suitable lenders found for this deal.
-                </div>
-              )}
-              {result.matches.map((match) => (
-                <MatchCard key={match.lender.id} match={match} />
-              ))}
-            </div>
-          )}
-
-          {!result && !loading && !error && (
-            <div className="bg-white rounded-xl border border-dashed border-gray-200 p-10 text-center text-sm text-gray-400">
-              Match results will appear here.
-            </div>
-          )}
+      {/* Platform Modules */}
+      <div>
+        <h2 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-4">Platform Modules</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <ModuleCard
+            title="Module 1 — Lender Intelligence"
+            description="Searchable database of lenders with appetite profiles, key contacts, and real-time status tracking."
+            href="/lenders"
+          />
+          <ModuleCard
+            title="Module 2 — Deal Drafting"
+            description="AI-powered email drafting engine using deal context and tone-matched prompt templates."
+            href="/drafting"
+          />
+          <ModuleCard
+            title="Module 3 — CRM"
+            description="Lightweight contact management with relationship health tracking and automated reminders."
+            href="/crm"
+          />
+          <ModuleCard
+            title="Module 4 — Inbound Handler"
+            description="Automated lead scoring, AI-drafted responses, and partner alerts for inbound enquiries."
+            href="/inbound"
+          />
         </div>
       </div>
     </div>
   );
 }
 
-function MatchCard({ match }: { match: LenderMatchResult }) {
-  const scoreColor =
-    match.match_score >= 80
-      ? 'bg-green-100 text-green-800'
-      : match.match_score >= 60
-      ? 'bg-yellow-100 text-yellow-800'
-      : 'bg-red-100 text-red-700';
-
-  const { lender } = match;
-  const displayName = lender.common_name ?? lender.lender_name;
-
+function StatCard({
+  title,
+  value,
+  icon: Icon,
+}: {
+  title: string;
+  value: number;
+  icon: React.FC<{ className?: string }>;
+}) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="font-semibold text-gray-900">{displayName}</h3>
-          {lender.common_name && lender.common_name !== lender.lender_name && (
-            <p className="text-xs text-gray-400 mt-0.5">{lender.lender_name}</p>
-          )}
-          <div className="flex items-center gap-2 mt-1">
-            {lender.current_status && (
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${LENDER_STATUS_COLORS[lender.current_status]}`}>
-                {LENDER_STATUS_LABELS[lender.current_status]}
-              </span>
-            )}
-            {lender.geography && (
-              <span className="text-xs text-gray-500">{lender.geography}</span>
-            )}
-          </div>
-        </div>
-        <span className={`text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0 ${scoreColor}`}>
-          {match.match_score}% match
-        </span>
+    <div className="bg-white rounded-xl border border-gray-100 border-t-4 border-t-[#C9A84C] shadow-sm p-5 hover:shadow-md transition-shadow duration-200">
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{title}</p>
+        <Icon className="w-4 h-4 text-[#1B3A35]" />
       </div>
-
-      <div className="grid grid-cols-3 gap-2">
-        <Stat
-          label="LTV"
-          value={
-            lender.ltv_standard != null
-              ? `${lender.ltv_standard}%${lender.ltv_stretch ? ` / ${lender.ltv_stretch}%` : ''}`
-              : '—'
-          }
-        />
-        <Stat
-          label="Rate"
-          value={
-            lender.rate_range_low != null || lender.rate_range_high != null
-              ? `${lender.rate_range_low ?? '—'}–${lender.rate_range_high ?? '—'}%`
-              : '—'
-          }
-        />
-        <Stat
-          label="Max Deal"
-          value={lender.deal_size_max != null ? formatMoney(lender.deal_size_max) : '—'}
-        />
-      </div>
-
-      {lender.asset_class_appetite.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {lender.asset_class_appetite.map((a) => (
-            <span key={a} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-              {a}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <p className="text-sm text-gray-700">{match.reasoning}</p>
-
-      {match.caveats.length > 0 && (
-        <ul className="space-y-1">
-          {match.caveats.map((c, i) => (
-            <li key={i} className="text-xs text-amber-700 flex gap-1.5">
-              <span className="flex-shrink-0 mt-0.5">⚠</span>
-              {c}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {lender.arrangement_fee || lender.turnaround_speed ? (
-        <div className="flex gap-4 text-xs text-gray-500 pt-1 border-t border-gray-50">
-          {lender.arrangement_fee && <span>Fee: {lender.arrangement_fee}</span>}
-          {lender.turnaround_speed && <span>Turnaround: {lender.turnaround_speed}</span>}
-        </div>
-      ) : null}
+      <p className="text-3xl font-semibold text-[#1B3A35]">{value}</p>
     </div>
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function QuickAction({
+  href,
+  label,
+  description,
+  icon: Icon,
+}: {
+  href: string;
+  label: string;
+  description: string;
+  icon: React.FC<{ className?: string }>;
+}) {
   return (
-    <div className="bg-gray-50 rounded-lg px-2.5 py-2">
-      <p className="text-gray-400 text-[10px] uppercase tracking-wide">{label}</p>
-      <p className="font-semibold text-gray-800 mt-0.5 text-sm">{value}</p>
-    </div>
+    <Link
+      href={href}
+      className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:border-[#C9A84C]/40 transition-all duration-200 group"
+    >
+      <div className="flex items-center gap-3 mb-2">
+        <div className="w-8 h-8 bg-[#1B3A35]/5 rounded-lg flex items-center justify-center group-hover:bg-[#C9A84C]/10 transition-colors duration-200">
+          <Icon className="w-4 h-4 text-[#1B3A35]" />
+        </div>
+        <p className="text-sm font-semibold text-[#2C2C2C]">{label}</p>
+      </div>
+      <p className="text-xs text-gray-400 leading-relaxed">{description}</p>
+    </Link>
   );
 }
 
-function formatMoney(n: number): string {
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}k`;
-  return `$${n}`;
+function ModuleCard({ title, description, href }: { title: string; description: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:border-[#C9A84C]/40 transition-all duration-200"
+    >
+      <h3 className="text-sm font-semibold text-[#1B3A35] mb-1.5">{title}</h3>
+      <p className="text-xs text-gray-400 leading-relaxed">{description}</p>
+    </Link>
+  );
+}
+
+function IconLenders({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+    </svg>
+  );
+}
+
+function IconContacts({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+}
+
+function IconLeads({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+    </svg>
+  );
+}
+
+function IconReminders({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+    </svg>
+  );
+}
+
+function IconDraft({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+  );
+}
+
+function IconInbound({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+    </svg>
+  );
+}
+
+function IconCRM({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
 }

@@ -21,15 +21,15 @@ interface InboundLead {
 
 const PRIORITY_STYLES: Record<string, string> = {
   urgent: 'bg-red-100 text-red-700',
-  standard: 'bg-yellow-100 text-yellow-700',
+  standard: 'bg-amber-100 text-amber-700',
   deprioritised: 'bg-gray-100 text-gray-600',
-  disqualified: 'bg-gray-900 text-white',
+  disqualified: 'bg-[#1B3A35] text-white',
 };
 
 const STATUS_STYLES: Record<string, string> = {
   new: 'bg-blue-100 text-blue-700',
   contacted: 'bg-purple-100 text-purple-700',
-  qualified: 'bg-green-100 text-green-700',
+  qualified: 'bg-emerald-100 text-emerald-700',
   rejected: 'bg-red-100 text-red-700',
 };
 
@@ -111,10 +111,9 @@ export default function InboundPage() {
     <div className="flex min-h-full">
       {/* ── Lead List ── */}
       <div className="flex-1 min-w-0 p-8 overflow-auto">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Inbound Leads</h1>
+            <h1 className="text-2xl font-serif font-semibold text-[#1B3A35]">Inbound Leads</h1>
             <p className="text-sm text-gray-500 mt-0.5">
               {leads.length} total
               {urgent > 0 && <span className="text-red-600 font-medium"> · {urgent} urgent</span>}
@@ -123,28 +122,24 @@ export default function InboundPage() {
           </div>
           <a
             href="/inbound/test"
-            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+            className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
           >
             + Test Form
           </a>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700 mb-6">
-            {error}
-          </div>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700 mb-6">{error}</div>
         )}
 
-        {loading && (
-          <div className="text-sm text-gray-400 py-12 text-center">Loading…</div>
-        )}
+        {loading && <div className="text-sm text-gray-400 py-12 text-center">Loading…</div>}
 
         {!loading && !error && leads.length === 0 && (
-          <div className="bg-white rounded-xl border border-dashed border-gray-200 p-16 text-center">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm border-dashed p-16 text-center">
             <p className="text-gray-400 text-sm mb-4">No inbound leads yet.</p>
             <a
               href="/inbound/test"
-              className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+              className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
             >
               Submit a test lead
             </a>
@@ -152,18 +147,18 @@ export default function InboundPage() {
         )}
 
         {!loading && leads.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Name</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Email</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Deal Size</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Asset Type</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Location</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Priority</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Received</th>
+                <tr className="bg-[#1B3A35]">
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Name</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Email</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Deal Size</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Asset Type</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Location</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Priority</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Received</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -171,9 +166,9 @@ export default function InboundPage() {
                   <tr
                     key={lead.id}
                     onClick={() => setSelected(lead)}
-                    className={`hover:bg-gray-50 transition-colors cursor-pointer ${selected?.id === lead.id ? 'bg-gray-50' : ''}`}
+                    className={`hover:bg-green-50 transition-colors duration-100 cursor-pointer ${selected?.id === lead.id ? 'bg-green-50' : ''}`}
                   >
-                    <td className="px-4 py-3 font-medium text-gray-900">{lead.name ?? '—'}</td>
+                    <td className="px-4 py-3 font-medium text-[#2C2C2C]">{lead.name ?? '—'}</td>
                     <td className="px-4 py-3 text-gray-500">{lead.email ?? '—'}</td>
                     <td className="px-4 py-3 text-gray-600">
                       {lead.deal_size ? formatMoney(lead.deal_size) : <span className="text-gray-300">—</span>}
@@ -200,10 +195,9 @@ export default function InboundPage() {
       {/* ── Detail Panel ── */}
       {selected && (
         <aside className="w-[460px] flex-shrink-0 border-l border-gray-200 bg-white overflow-y-auto flex flex-col">
-          {/* Panel header */}
           <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-semibold text-gray-900 truncate">{selected.name ?? 'Unknown'}</p>
+              <p className="font-semibold text-[#2C2C2C] truncate">{selected.name ?? 'Unknown'}</p>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge value={selected.priority} styleMap={PRIORITY_STYLES} />
                 <Badge value={selected.status} styleMap={STATUS_STYLES} />
@@ -211,7 +205,7 @@ export default function InboundPage() {
             </div>
             <button
               onClick={() => setSelected(null)}
-              className="text-gray-400 hover:text-gray-600 flex-shrink-0 mt-0.5"
+              className="text-gray-400 hover:text-gray-600 flex-shrink-0 mt-0.5 transition-colors"
               aria-label="Close panel"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -221,18 +215,16 @@ export default function InboundPage() {
           </div>
 
           <div className="px-6 py-5 space-y-6 flex-1">
-            {/* Contact */}
             <section>
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Contact</h3>
+              <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Contact</h3>
               <dl className="space-y-2">
                 <Row label="Email" value={selected.email} />
                 <Row label="Phone" value={selected.phone} />
               </dl>
             </section>
 
-            {/* Deal Details */}
             <section>
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Deal Details</h3>
+              <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Deal Details</h3>
               <dl className="space-y-2">
                 <Row label="Deal Size" value={selected.deal_size ? formatMoney(selected.deal_size) : null} />
                 <Row label="Asset Type" value={selected.asset_type} />
@@ -241,25 +233,22 @@ export default function InboundPage() {
               </dl>
             </section>
 
-            {/* Additional Info */}
             {selected.additional_info && (
               <section>
-                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Additional Info</h3>
+                <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Additional Info</h3>
                 <p className="text-sm text-gray-700 leading-relaxed">{selected.additional_info}</p>
               </section>
             )}
 
-            {/* Priority Reason */}
             {selected.priority_reason && (
               <section>
-                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Priority Reason</h3>
+                <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Priority Reason</h3>
                 <p className="text-sm text-gray-600">{selected.priority_reason}</p>
               </section>
             )}
 
-            {/* Status Update */}
             <section>
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Update Status</h3>
+              <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Update Status</h3>
               <div className="flex gap-2">
                 <select
                   className="input flex-1"
@@ -274,24 +263,23 @@ export default function InboundPage() {
                 <button
                   onClick={handleStatusSave}
                   disabled={statusSaving || statusValue === (selected.status ?? 'new')}
-                  className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                  className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
                 >
                   {statusSaving ? 'Saving…' : 'Save'}
                 </button>
               </div>
             </section>
 
-            {/* AI Draft Response */}
             {selected.ai_draft_response && (
               <section>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider">AI Draft Response</h3>
+                  <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest">AI Draft Response</h3>
                   <button
                     onClick={handleCopy}
-                    className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-gray-700 transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-[#1B3A35] transition-colors"
                   >
                     {copied ? (
-                      <span className="text-green-600">Copied</span>
+                      <span className="text-emerald-600">Copied</span>
                     ) : (
                       <>
                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -303,13 +291,12 @@ export default function InboundPage() {
                   </button>
                 </div>
                 <div className="bg-gray-50 border border-gray-100 rounded-lg p-4">
-                  <pre className="text-sm text-gray-800 whitespace-pre-wrap font-sans leading-relaxed">{selected.ai_draft_response}</pre>
+                  <pre className="text-sm text-[#2C2C2C] whitespace-pre-wrap font-sans leading-relaxed">{selected.ai_draft_response}</pre>
                 </div>
               </section>
             )}
 
-            {/* Received */}
-            <p className="text-xs text-gray-400 pb-2">
+            <p className="text-xs text-gray-300 pb-2">
               Received {new Date(selected.created_at).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </p>
           </div>
@@ -323,7 +310,7 @@ function Row({ label, value }: { label: string; value: string | null | undefined
   return (
     <div className="flex gap-3 text-sm">
       <dt className="text-gray-400 w-24 flex-shrink-0">{label}</dt>
-      <dd className="text-gray-800">{value ?? <span className="text-gray-300">—</span>}</dd>
+      <dd className="text-[#2C2C2C]">{value ?? <span className="text-gray-300">—</span>}</dd>
     </div>
   );
 }
