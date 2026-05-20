@@ -13,7 +13,7 @@ async function getLenders(): Promise<Lender[]> {
     .from('lenders')
     .select('*')
     .order('lender_name');
-  if (error) throw new Error(error.message);
+if (error) throw new Error(error.message);
   return data ?? [];
 }
 
