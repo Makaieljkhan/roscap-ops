@@ -28,9 +28,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <p className="text-xs text-gray-600 font-medium uppercase tracking-wider">Drafting</p>
               </div>
               <NavLink href="/drafting" label="Deal Drafting" icon={IconDraft} />
+              <div className="pt-2 pb-1 px-3">
+                <p className="text-xs text-gray-600 font-medium uppercase tracking-wider">Inbound</p>
+              </div>
+              <NavLink href="/inbound" label="Inbound Leads" icon={IconInbound} />
+              <NavLink href="/inbound/test" label="Test Form" icon={IconPlus} />
             </nav>
             <div className="px-6 py-4 border-t border-gray-800">
-              <p className="text-xs text-gray-500">Module 1–2 — Lenders &amp; Drafting</p>
+              <p className="text-xs text-gray-500">Modules 1, 2, 4</p>
             </div>
           </aside>
           <main className="flex-1 overflow-auto">{children}</main>
@@ -88,6 +93,14 @@ function IconDraft({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+  );
+}
+
+function IconInbound({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
     </svg>
   );
 }
