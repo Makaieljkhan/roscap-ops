@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Contact {
   id: string;
@@ -13,6 +14,14 @@ interface Contact {
   last_contact_date: string | null;
   last_deal_size: number | null;
   last_deal_type: string | null;
+  last_deal_date: string | null;
+  email: string | null;
+  phone: string | null;
+  birthday: string | null;
+  pipeline_note: string | null;
+  notes: string | null;
+  deal_tier_preference: string | null;
+  created_at: string;
 }
 
 interface Reminder {
@@ -64,15 +73,28 @@ function formatDate(d: string | null): string {
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function Row({ label, value }: { label: string; value?: string | null }) {
+  return (
+    <div className="flex gap-3 text-sm">
+      <dt className="text-gray-400 w-28 flex-shrink-0">{label}</dt>
+      <dd className="text-gray-800">{value || <span className="text-gray-300">—</span>}</dd>
+    </div>
+  );
+}
+
 export default function CRMPage() {
+  const router = useRouter();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [selected, setSelected] = useState<Contact | null>(null);
   const [search, setSearch] = useState('');
   const [loadingContacts, setLoadingContacts] = useState(true);
   const [loadingReminders, setLoadingReminders] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [generateResult, setGenerateResult] = useState<string | null>(null);
   const [contactsError, setContactsError] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchContacts = useCallback(async () => {
     try {
@@ -133,6 +155,25 @@ export default function CRMPage() {
       body: JSON.stringify({ status: 'dismissed' }),
     });
     setReminders(prev => prev.filter(r => r.id !== reminderId));
+  }
+
+  async function handleDelete() {
+    if (!selected) return;
+    setDeleting(true);
+    try {
+      await fetch(`/api/crm/${selected.id}`, { method: 'DELETE' });
+      setContacts(prev => prev.filter(c => c.id !== selected.id));
+      setSelected(null);
+      setConfirmDelete(false);
+      router.refresh();
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  function handleSelectContact(contact: Contact) {
+    setSelected(contact);
+    setConfirmDelete(false);
   }
 
   return (
@@ -198,11 +239,13 @@ export default function CRMPage() {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {filteredContacts.map(c => (
-                  <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={c.id}
+                    onClick={() => handleSelectContact(c)}
+                    className={`hover:bg-gray-50 transition-colors cursor-pointer ${selected?.id === c.id ? 'bg-blue-50 hover:bg-blue-50' : ''}`}
+                  >
                     <td className="px-4 py-3">
-                      <Link href={`/crm/${c.id}`} className="font-medium text-gray-900 hover:underline underline-offset-2">
-                        {c.full_name}
-                      </Link>
+                      <span className="font-medium text-gray-900">{c.full_name}</span>
                       {c.preferred_name && c.preferred_name !== c.full_name && (
                         <p className="text-xs text-gray-400 mt-0.5">{c.preferred_name}</p>
                       )}
@@ -232,41 +275,154 @@ export default function CRMPage() {
         )}
       </div>
 
-      {/* ── Reminders Panel ── */}
-      <aside className="w-80 flex-shrink-0 border-l border-gray-200 bg-white overflow-y-auto flex flex-col">
-        <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="font-semibold text-gray-900 text-sm">Reminders</p>
-              <p className="text-xs text-gray-400 mt-0.5">{reminders.length} pending</p>
+      {/* ── Right Panel: Contact Detail or Reminders ── */}
+      {selected ? (
+        <aside className="w-[400px] flex-shrink-0 border-l border-gray-200 bg-white overflow-y-auto flex flex-col">
+          {/* Panel header */}
+          <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4 flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="font-semibold text-gray-900 truncate">{selected.full_name}</p>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                {selected.company && <span className="text-xs text-gray-400">{selected.company}</span>}
+                {selected.contact_type && (
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${TYPE_STYLES[selected.contact_type] ?? 'bg-gray-100 text-gray-600'}`}>
+                    {selected.contact_type}
+                  </span>
+                )}
+                {selected.relationship_health && (
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${HEALTH_STYLES[selected.relationship_health] ?? 'bg-gray-100 text-gray-600'}`}>
+                    {selected.relationship_health.replace('_', ' ')}
+                  </span>
+                )}
+              </div>
             </div>
             <button
-              onClick={handleGenerate}
-              disabled={generating}
-              className="text-xs font-medium bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
+              onClick={() => { setSelected(null); setConfirmDelete(false); }}
+              className="text-gray-400 hover:text-gray-600 flex-shrink-0 mt-0.5 transition-colors"
+              aria-label="Close panel"
             >
-              {generating ? 'Running…' : 'Generate'}
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
-          {generateResult && (
-            <p className="text-xs text-gray-500 bg-gray-50 rounded-lg px-3 py-2">{generateResult}</p>
-          )}
-        </div>
 
-        <div className="flex-1 px-4 py-4 space-y-3">
-          {loadingReminders && <p className="text-xs text-gray-400 text-center py-8">Loading…</p>}
+          <div className="px-5 py-5 space-y-6 flex-1">
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/crm/${selected.id}/edit`}
+                className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+              >
+                Edit
+              </Link>
+              {confirmDelete ? (
+                <div className="flex items-center gap-2 flex-1">
+                  <p className="text-xs text-gray-600 flex-1">Delete {selected.full_name}? This cannot be undone.</p>
+                  <button
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {deleting ? 'Deleting…' : 'Confirm'}
+                  </button>
+                  <button
+                    onClick={() => setConfirmDelete(false)}
+                    className="text-xs font-medium text-gray-600 hover:text-gray-900 px-2 py-1.5 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
 
-          {!loadingReminders && reminders.length === 0 && (
-            <p className="text-xs text-gray-400 text-center py-8">
-              No pending reminders. Click Generate to check for new ones.
+            {/* Contact Details */}
+            <section>
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Contact Details</h3>
+              <dl className="space-y-2">
+                <Row label="Email" value={selected.email} />
+                <Row label="Phone" value={selected.phone} />
+                <Row label="Birthday" value={formatDate(selected.birthday)} />
+                <Row label="Last Contact" value={formatDate(selected.last_contact_date)} />
+                <Row label="Deal Tier" value={selected.deal_tier_preference} />
+              </dl>
+            </section>
+
+            {/* Last Deal */}
+            <section>
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Last Deal</h3>
+              <dl className="space-y-2">
+                <Row label="Type" value={selected.last_deal_type} />
+                <Row label="Size" value={formatMoney(selected.last_deal_size)} />
+                <Row label="Date" value={formatDate(selected.last_deal_date)} />
+              </dl>
+            </section>
+
+            {/* Pipeline Note */}
+            {selected.pipeline_note && (
+              <section>
+                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Pipeline Note</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">{selected.pipeline_note}</p>
+              </section>
+            )}
+
+            {/* Notes */}
+            {selected.notes && (
+              <section>
+                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Notes</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">{selected.notes}</p>
+              </section>
+            )}
+
+            <p className="text-xs text-gray-300 pb-2">
+              Added {new Date(selected.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
-          )}
+          </div>
+        </aside>
+      ) : (
+        /* ── Reminders Panel ── */
+        <aside className="w-80 flex-shrink-0 border-l border-gray-200 bg-white overflow-y-auto flex flex-col">
+          <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <p className="font-semibold text-gray-900 text-sm">Reminders</p>
+                <p className="text-xs text-gray-400 mt-0.5">{reminders.length} pending</p>
+              </div>
+              <button
+                onClick={handleGenerate}
+                disabled={generating}
+                className="text-xs font-medium bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
+              >
+                {generating ? 'Running…' : 'Generate'}
+              </button>
+            </div>
+            {generateResult && (
+              <p className="text-xs text-gray-500 bg-gray-50 rounded-lg px-3 py-2">{generateResult}</p>
+            )}
+          </div>
 
-          {reminders.map(r => (
-            <ReminderCard key={r.id} reminder={r} onDismiss={handleDismiss} />
-          ))}
-        </div>
-      </aside>
+          <div className="flex-1 px-4 py-4 space-y-3">
+            {loadingReminders && <p className="text-xs text-gray-400 text-center py-8">Loading…</p>}
+
+            {!loadingReminders && reminders.length === 0 && (
+              <p className="text-xs text-gray-400 text-center py-8">
+                No pending reminders. Click Generate to check for new ones.
+              </p>
+            )}
+
+            {reminders.map(r => (
+              <ReminderCard key={r.id} reminder={r} onDismiss={handleDismiss} />
+            ))}
+          </div>
+        </aside>
+      )}
     </div>
   );
 }
@@ -279,9 +435,7 @@ function ReminderCard({ reminder, onDismiss }: { reminder: Reminder; onDismiss: 
     <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <Link href={`/crm/${reminder.contact_id}`} className="text-sm font-medium text-gray-900 hover:underline underline-offset-2 truncate block">
-            {contactName}
-          </Link>
+          <p className="text-sm font-medium text-gray-900 truncate">{contactName}</p>
           {reminder.contacts?.company && (
             <p className="text-xs text-gray-400 truncate">{reminder.contacts.company}</p>
           )}

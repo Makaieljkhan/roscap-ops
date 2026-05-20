@@ -84,8 +84,8 @@ export default function ContactForm({ mode, initialData, onSuccess, onCancel }: 
     try {
       const url = mode === 'create'
         ? '/api/crm/contacts'
-        : `/api/crm/contacts/${initialData?.id}`;
-      const method = mode === 'create' ? 'POST' : 'PUT';
+        : `/api/crm/${initialData?.id}`;
+      const method = mode === 'create' ? 'POST' : 'PATCH';
 
       const res = await fetch(url, {
         method,
