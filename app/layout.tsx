@@ -24,9 +24,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <NavLink href="/" label="Dashboard" icon={IconDashboard} />
               <NavLink href="/lenders" label="Lenders" icon={IconLenders} />
               <NavLink href="/lenders/new" label="Add Lender" icon={IconPlus} />
+              <div className="pt-2 pb-1 px-3">
+                <p className="text-xs text-gray-600 font-medium uppercase tracking-wider">Drafting</p>
+              </div>
+              <NavLink href="/drafting" label="Deal Drafting" icon={IconDraft} />
             </nav>
             <div className="px-6 py-4 border-t border-gray-800">
-              <p className="text-xs text-gray-500">Module 1 — Lenders</p>
+              <p className="text-xs text-gray-500">Module 1–2 — Lenders &amp; Drafting</p>
             </div>
           </aside>
           <main className="flex-1 overflow-auto">{children}</main>
@@ -76,6 +80,14 @@ function IconPlus({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+    </svg>
+  );
+}
+
+function IconDraft({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
     </svg>
   );
 }
