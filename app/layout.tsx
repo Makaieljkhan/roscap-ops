@@ -33,9 +33,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
               <NavLink href="/inbound" label="Inbound Leads" icon={IconInbound} />
               <NavLink href="/inbound/test" label="Test Form" icon={IconPlus} />
+              <div className="pt-2 pb-1 px-3">
+                <p className="text-xs text-gray-600 font-medium uppercase tracking-wider">CRM</p>
+              </div>
+              <NavLink href="/crm" label="Contacts" icon={IconCRM} />
+              <NavLink href="/crm/new" label="Add Contact" icon={IconPlus} />
             </nav>
             <div className="px-6 py-4 border-t border-gray-800">
-              <p className="text-xs text-gray-500">Modules 1, 2, 4</p>
+              <p className="text-xs text-gray-500">Modules 1, 2, 3, 4</p>
             </div>
           </aside>
           <main className="flex-1 overflow-auto">{children}</main>
@@ -93,6 +98,14 @@ function IconDraft({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+  );
+}
+
+function IconCRM({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
   );
 }
