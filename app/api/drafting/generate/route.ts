@@ -31,7 +31,10 @@ CONTENT RULES:
 LENGTH:
 - Tier 1 emails: 150-250 words
 - Tier 2 emails: 100-180 words
-- Tier 3 emails: 80-150 words`;
+- Tier 3 emails: 80-150 words
+
+CRITICAL OUTPUT RULE:
+Do not use any markdown formatting in your output. This means no ** for bold, no * for italic, no # for headers, no --- for dividers. The output will be displayed as plain text and rendered directly into an email. Any markdown symbols will appear as literal characters and look unprofessional. Write in plain text only. For bullet points use a simple bullet character like • not markdown.`;
 
 export async function POST(request: NextRequest) {
   try {
