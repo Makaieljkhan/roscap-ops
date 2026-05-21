@@ -50,7 +50,7 @@ export default function EditContactPage({ params }: { params: { id: string } }) 
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
-        <Link href="/crm" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
+        <Link href="/dashboard/crm" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
           ← Contacts
         </Link>
         <h1 className="text-2xl font-serif font-semibold text-[#1B3A35] mt-2">Edit Contact</h1>
@@ -60,8 +60,8 @@ export default function EditContactPage({ params }: { params: { id: string } }) 
         <ContactForm
           mode="edit"
           initialData={initialData}
-          onSuccess={() => router.push('/crm')}
-          onCancel={() => router.push('/crm')}
+          onSuccess={() => router.push('/dashboard/crm')}
+          onCancel={() => router.push('/dashboard/crm')}
         />
       </div>
     </div>

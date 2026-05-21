@@ -35,23 +35,23 @@ interface Reminder {
 }
 
 const HEALTH_STYLES: Record<string, string> = {
-  active: 'bg-emerald-100 text-emerald-700',
-  warm: 'bg-amber-100 text-amber-700',
-  at_risk: 'bg-orange-100 text-orange-700',
-  dormant: 'bg-gray-100 text-gray-500',
+  active: 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/50',
+  warm: 'bg-amber-950/60 text-amber-300 border border-amber-800/50',
+  at_risk: 'bg-orange-950/60 text-orange-300 border border-orange-800/50',
+  dormant: 'bg-[#1a2e22] text-[#8aab95] border border-[#1e3328]',
 };
 
 const TYPE_STYLES: Record<string, string> = {
-  client: 'bg-indigo-100 text-indigo-700',
-  introducer: 'bg-green-100 text-green-700',
-  lender: 'bg-amber-100 text-amber-700',
+  client: 'bg-indigo-950/60 text-indigo-300 border border-indigo-800/50',
+  introducer: 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/50',
+  lender: 'bg-amber-950/60 text-amber-300 border border-amber-800/50',
 };
 
 const REMINDER_STYLES: Record<string, string> = {
-  anniversary: 'bg-blue-100 text-blue-700',
-  birthday: 'bg-pink-100 text-pink-700',
-  dormancy: 'bg-gray-100 text-gray-600',
-  pipeline: 'bg-indigo-100 text-indigo-700',
+  anniversary: 'bg-sky-950/60 text-sky-300 border border-sky-800/50',
+  birthday: 'bg-pink-950/60 text-pink-300 border border-pink-800/50',
+  dormancy: 'bg-[#1a2e22] text-[#8aab95] border border-[#1e3328]',
+  pipeline: 'bg-purple-950/60 text-purple-300 border border-purple-800/50',
 };
 
 const REMINDER_LABELS: Record<string, string> = {
@@ -76,8 +76,8 @@ function formatDate(d: string | null): string {
 function Row({ label, value }: { label: string; value?: string | null }) {
   return (
     <div className="flex gap-3 text-sm">
-      <dt className="text-gray-400 w-28 flex-shrink-0">{label}</dt>
-      <dd className="text-[#2C2C2C]">{value || <span className="text-gray-300">—</span>}</dd>
+      <dt className="text-[#4a7060] w-28 flex-shrink-0">{label}</dt>
+      <dd className="text-[#f0ebe0]">{value || <span className="text-[#2a4535]">—</span>}</dd>
     </div>
   );
 }
@@ -182,12 +182,12 @@ export default function CRMPage() {
       <div className="flex-1 min-w-0 p-8 overflow-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-serif font-semibold text-[#1B3A35]">CRM</h1>
-            <p className="text-sm text-gray-500 mt-0.5">{contacts.length} contact{contacts.length !== 1 ? 's' : ''}</p>
+            <h1 className="font-display text-[2.2rem] font-light italic text-[#f0ebe0]">CRM</h1>
+            <p className="text-sm text-[#4a7060] mt-0.5">{contacts.length} contact{contacts.length !== 1 ? 's' : ''}</p>
           </div>
           <Link
-            href="/crm/new"
-            className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
+            href="/dashboard/crm/new"
+            className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all"
           >
             + Add Contact
           </Link>
@@ -195,7 +195,7 @@ export default function CRMPage() {
 
         {/* Search */}
         <div className="mb-5 relative">
-          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#4a7060] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
@@ -208,16 +208,16 @@ export default function CRMPage() {
         </div>
 
         {contactsError && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700 mb-5">{contactsError}</div>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-300 mb-5">{contactsError}</div>
         )}
 
-        {loadingContacts && <div className="text-sm text-gray-400 py-12 text-center">Loading…</div>}
+        {loadingContacts && <div className="text-sm text-[#4a7060] py-12 text-center">Loading…</div>}
 
         {!loadingContacts && filteredContacts.length === 0 && (
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm border-dashed p-16 text-center">
-            <p className="text-gray-400 text-sm mb-4">{search ? 'No contacts match your search.' : 'No contacts yet.'}</p>
+          <div className="bg-[#132019] rounded-xl border border-[#1e3328] shadow-sm border-dashed p-16 text-center">
+            <p className="text-[#4a7060] text-sm mb-4">{search ? 'No contacts match your search.' : 'No contacts yet.'}</p>
             {!search && (
-              <Link href="/crm/new" className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200">
+              <Link href="/dashboard/crm/new" className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all">
                 Add your first contact
               </Link>
             )}
@@ -225,10 +225,10 @@ export default function CRMPage() {
         )}
 
         {!loadingContacts && filteredContacts.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
+          <div className="bg-[#132019] rounded-xl border border-[#1e3328] shadow-sm overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#1B3A35]">
+                <tr>
                   <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Name</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Company</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Type</th>
@@ -242,15 +242,15 @@ export default function CRMPage() {
                   <tr
                     key={c.id}
                     onClick={() => handleSelectContact(c)}
-                    className={`hover:bg-green-50 transition-colors duration-100 cursor-pointer ${selected?.id === c.id ? 'bg-green-50' : ''}`}
+                    className={`hover:bg-[rgba(201,168,76,0.05)] transition-colors duration-100 cursor-pointer ${selected?.id === c.id ? 'bg-[rgba(201,168,76,0.06)]' : ''}`}
                   >
                     <td className="px-4 py-3">
-                      <span className="font-medium text-[#2C2C2C]">{c.full_name}</span>
+                      <span className="font-medium text-[#f0ebe0]">{c.full_name}</span>
                       {c.preferred_name && c.preferred_name !== c.full_name && (
-                        <p className="text-xs text-gray-400 mt-0.5">{c.preferred_name}</p>
+                        <p className="text-xs text-[#4a7060] mt-0.5">{c.preferred_name}</p>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-gray-500">{c.company ?? <span className="text-gray-300">—</span>}</td>
+                    <td className="px-4 py-3 text-[#4a7060]">{c.company ?? <span className="text-gray-300">—</span>}</td>
                     <td className="px-4 py-3">
                       {c.contact_type ? (
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${TYPE_STYLES[c.contact_type] ?? 'bg-gray-100 text-gray-600'}`}>
@@ -265,7 +265,7 @@ export default function CRMPage() {
                         </span>
                       ) : <span className="text-gray-300 text-xs">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">{formatDate(c.last_contact_date)}</td>
+                    <td className="px-4 py-3 text-[#4a7060] text-xs whitespace-nowrap">{formatDate(c.last_contact_date)}</td>
                     <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{formatMoney(c.last_deal_size)}</td>
                   </tr>
                 ))}
@@ -277,12 +277,12 @@ export default function CRMPage() {
 
       {/* ── Right Panel: Contact Detail or Reminders ── */}
       {selected ? (
-        <aside className="w-[400px] flex-shrink-0 border-l border-gray-200 bg-white overflow-y-auto flex flex-col">
-          <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4 flex items-start justify-between gap-3">
+        <aside className="w-[400px] flex-shrink-0 border-l border-[#1e3328] bg-[#132019] overflow-y-auto flex flex-col">
+          <div className="sticky top-0 bg-[#132019] border-b border-[#1e3328] px-5 py-4 flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-semibold text-[#2C2C2C] truncate">{selected.full_name}</p>
+              <p className="font-semibold text-[#f0ebe0] truncate">{selected.full_name}</p>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                {selected.company && <span className="text-xs text-gray-400">{selected.company}</span>}
+                {selected.company && <span className="text-xs text-[#4a7060]">{selected.company}</span>}
                 {selected.contact_type && (
                   <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${TYPE_STYLES[selected.contact_type] ?? 'bg-gray-100 text-gray-600'}`}>
                     {selected.contact_type}
@@ -297,7 +297,7 @@ export default function CRMPage() {
             </div>
             <button
               onClick={() => { setSelected(null); setConfirmDelete(false); }}
-              className="text-gray-400 hover:text-gray-600 flex-shrink-0 mt-0.5 transition-colors"
+              className="text-[#4a7060] hover:text-gray-600 flex-shrink-0 mt-0.5 transition-colors"
               aria-label="Close panel"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -310,8 +310,8 @@ export default function CRMPage() {
             {/* Actions */}
             <div className="flex items-center gap-2">
               <Link
-                href={`/crm/${selected.id}/edit`}
-                className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
+                href={`/dashboard/crm/${selected.id}/edit`}
+                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all"
               >
                 Edit
               </Link>
@@ -383,30 +383,30 @@ export default function CRMPage() {
         </aside>
       ) : (
         /* ── Reminders Panel ── */
-        <aside className="w-80 flex-shrink-0 border-l border-gray-200 bg-white overflow-y-auto flex flex-col">
-          <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4">
+        <aside className="w-80 flex-shrink-0 border-l border-[#1e3328] bg-[#132019] overflow-y-auto flex flex-col">
+          <div className="sticky top-0 bg-[#132019] border-b border-[#1e3328] px-5 py-4">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="font-semibold text-[#2C2C2C] text-sm">Reminders</p>
-                <p className="text-xs text-gray-400 mt-0.5">{reminders.length} pending</p>
+                <p className="font-semibold text-[#f0ebe0] text-sm">Reminders</p>
+                <p className="text-xs text-[#4a7060] mt-0.5">{reminders.length} pending</p>
               </div>
               <button
                 onClick={handleGenerate}
                 disabled={generating}
-                className="text-xs font-medium bg-[#1B3A35] text-white px-3 py-1.5 rounded-lg hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200 disabled:opacity-50"
+                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all text-xs px-3 py-1.5"
               >
                 {generating ? 'Running…' : 'Generate'}
               </button>
             </div>
             {generateResult && (
-              <p className="text-xs text-gray-500 bg-gray-50 rounded-lg px-3 py-2">{generateResult}</p>
+              <p className="text-xs text-[#4a7060] bg-[#0b1612] rounded-lg px-3 py-2">{generateResult}</p>
             )}
           </div>
 
           <div className="flex-1 px-4 py-4 space-y-3">
-            {loadingReminders && <p className="text-xs text-gray-400 text-center py-8">Loading…</p>}
+            {loadingReminders && <p className="text-xs text-[#4a7060] text-center py-8">Loading…</p>}
             {!loadingReminders && reminders.length === 0 && (
-              <p className="text-xs text-gray-400 text-center py-8">
+              <p className="text-xs text-[#4a7060] text-center py-8">
                 No pending reminders. Click Generate to check for new ones.
               </p>
             )}
@@ -425,17 +425,17 @@ function ReminderCard({ reminder, onDismiss }: { reminder: Reminder; onDismiss: 
   const contactName = reminder.contacts?.full_name ?? 'Unknown';
 
   return (
-    <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
+    <div className="bg-[#0b1612] border border-[#1e3328] rounded-xl p-4 space-y-2">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-[#2C2C2C] truncate">{contactName}</p>
+          <p className="text-sm font-medium text-[#f0ebe0] truncate">{contactName}</p>
           {reminder.contacts?.company && (
-            <p className="text-xs text-gray-400 truncate">{reminder.contacts.company}</p>
+            <p className="text-xs text-[#4a7060] truncate">{reminder.contacts.company}</p>
           )}
         </div>
         <button
           onClick={() => onDismiss(reminder.id)}
-          className="text-gray-300 hover:text-gray-500 transition-colors flex-shrink-0 mt-0.5"
+          className="text-gray-300 hover:text-[#4a7060] transition-colors flex-shrink-0 mt-0.5"
           aria-label="Dismiss"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -448,7 +448,7 @@ function ReminderCard({ reminder, onDismiss }: { reminder: Reminder; onDismiss: 
         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${REMINDER_STYLES[reminder.reminder_type] ?? 'bg-gray-100 text-gray-600'}`}>
           {REMINDER_LABELS[reminder.reminder_type]}
         </span>
-        <span className="text-xs text-gray-400">
+        <span className="text-xs text-[#4a7060]">
           {new Date(reminder.due_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
         </span>
       </div>
@@ -461,7 +461,7 @@ function ReminderCard({ reminder, onDismiss }: { reminder: Reminder; onDismiss: 
           {reminder.ai_draft_message.length > 120 && (
             <button
               onClick={() => setExpanded(e => !e)}
-              className="text-xs text-gray-400 hover:text-[#1B3A35] mt-1 transition-colors"
+              className="text-xs text-[#4a7060] hover:text-[#f0ebe0] mt-1 transition-colors"
             >
               {expanded ? 'Show less' : 'Show more'}
             </button>

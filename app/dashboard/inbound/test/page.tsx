@@ -54,7 +54,7 @@ const PRESETS = [
   },
   {
     label: 'Deprioritised',
-    color: 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100',
+    color: 'bg-[#0b1612] border-[#1e3328] text-[#8aab95] hover:bg-[#1a2e22]',
     data: {
       name: 'Dave Reynolds',
       email: 'dave.reynolds@example.com',
@@ -126,11 +126,11 @@ export default function TestFormPage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
-        <Link href="/inbound" className="text-sm text-gray-400 hover:text-[#1B3A35] transition-colors">
+        <Link href="/dashboard/inbound" className="text-sm text-[#4a7060] hover:text-[#1B3A35] transition-colors">
           ← Inbound Leads
         </Link>
-        <h1 className="text-2xl font-serif font-semibold text-[#1B3A35] mt-2">Test Form</h1>
-        <p className="text-sm text-gray-500 mt-1">Submit a dummy lead to test scoring, AI draft generation, and the inbound pipeline.</p>
+        <h1 className="font-display text-[2rem] font-light italic text-[#f0ebe0] mt-2">Test Form</h1>
+        <p className="text-sm text-[#4a7060] mt-1">Submit a dummy lead to test scoring, AI draft generation, and the inbound pipeline.</p>
       </div>
 
       {/* Preset buttons */}
@@ -150,7 +150,7 @@ export default function TestFormPage() {
           <button
             type="button"
             onClick={() => { setForm(EMPTY); setResult(null); }}
-            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors"
+            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[#1e3328] text-[#4a7060] hover:bg-[#0b1612] transition-colors"
           >
             Clear
           </button>
@@ -160,7 +160,7 @@ export default function TestFormPage() {
       {result?.success && (
         <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-6 text-sm text-emerald-800">
           Lead submitted — priority scored as <strong className="capitalize">{result.priority}</strong>.{' '}
-          <Link href="/inbound" className="underline underline-offset-2">View in Inbound Leads →</Link>
+          <Link href="/dashboard/inbound" className="underline underline-offset-2">View in Inbound Leads →</Link>
         </div>
       )}
       {result?.success === false && (
@@ -169,7 +169,7 @@ export default function TestFormPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5 bg-white border border-gray-100 shadow-sm rounded-xl p-6">
+      <form onSubmit={handleSubmit} className="space-y-5 bg-[#132019] border border-[#1e3328] rounded-xl p-6">
         <div className="grid grid-cols-2 gap-5">
           <div>
             <label className="label" htmlFor="name">Name *</label>
@@ -230,7 +230,7 @@ export default function TestFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#1B3A35] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all-lg w-full"
         >
           {loading ? 'Submitting…' : 'Submit Lead'}
         </button>

@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 export function createServerSupabaseClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -8,10 +8,12 @@ export function createServerSupabaseClient() {
     throw new Error('Missing Supabase server environment variables');
   }
 
-  return createClient(url, key, {
+  return createSupabaseClient(url, key, {
     auth: { persistSession: false },
     global: {
       fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }),
     },
   });
 }
+
+export const createClient = createServerSupabaseClient;

@@ -20,17 +20,17 @@ interface InboundLead {
 }
 
 const PRIORITY_STYLES: Record<string, string> = {
-  urgent: 'bg-red-100 text-red-700',
-  standard: 'bg-amber-100 text-amber-700',
-  deprioritised: 'bg-gray-100 text-gray-600',
-  disqualified: 'bg-[#1B3A35] text-white',
+  urgent: 'bg-red-950/60 text-red-300 border border-red-800/50',
+  standard: 'bg-amber-950/60 text-amber-300 border border-amber-800/50',
+  deprioritised: 'bg-[#1a2e22] text-[#8aab95] border border-[#1e3328]',
+  disqualified: 'bg-[#0e1c17] text-[#4a7060] border border-[#1e3328]',
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  new: 'bg-blue-100 text-blue-700',
-  contacted: 'bg-purple-100 text-purple-700',
-  qualified: 'bg-emerald-100 text-emerald-700',
-  rejected: 'bg-red-100 text-red-700',
+  new: 'bg-sky-950/60 text-sky-300 border border-sky-800/50',
+  contacted: 'bg-purple-950/60 text-purple-300 border border-purple-800/50',
+  qualified: 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/50',
+  rejected: 'bg-red-950/60 text-red-300 border border-red-800/50',
 };
 
 function formatMoney(n: number): string {
@@ -40,8 +40,8 @@ function formatMoney(n: number): string {
 }
 
 function Badge({ value, styleMap, fallback = '—' }: { value: string | null; styleMap: Record<string, string>; fallback?: string }) {
-  if (!value) return <span className="text-gray-300 text-xs">{fallback}</span>;
-  const cls = styleMap[value] ?? 'bg-gray-100 text-gray-600';
+  if (!value) return <span className="text-[#2a4535] text-xs">{fallback}</span>;
+  const cls = styleMap[value] ?? 'bg-[#1a2e22] text-[#8aab95] border border-[#1e3328]';
   return (
     <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${cls}`}>
       {value}
@@ -108,38 +108,37 @@ export default function InboundPage() {
   const newLeads = leads.filter(l => l.status === 'new').length;
 
   return (
-    <div className="flex min-h-full">
-      {/* ── Lead List ── */}
+    <div className="flex min-h-full -m-8">
       <div className="flex-1 min-w-0 p-8 overflow-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-serif font-semibold text-[#1B3A35]">Inbound Leads</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h1 className="font-display text-[2.2rem] font-light italic text-[#f0ebe0]">Inbound Handler</h1>
+            <p className="text-sm text-[#4a7060] mt-1.5">
               {leads.length} total
-              {urgent > 0 && <span className="text-red-600 font-medium"> · {urgent} urgent</span>}
-              {newLeads > 0 && <span className="text-blue-600 font-medium"> · {newLeads} new</span>}
+              {urgent > 0 && <span className="text-red-400 font-medium"> · {urgent} urgent</span>}
+              {newLeads > 0 && <span className="text-sky-400 font-medium"> · {newLeads} new</span>}
             </p>
           </div>
           <a
-            href="/inbound/test"
-            className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
+            href="/dashboard/inbound/test"
+            className="inline-flex items-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all"
           >
             + Test Form
           </a>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700 mb-6">{error}</div>
+          <div className="bg-red-950/30 border border-red-800/40 rounded-xl p-4 text-sm text-red-300 mb-6">{error}</div>
         )}
 
-        {loading && <div className="text-sm text-gray-400 py-12 text-center">Loading…</div>}
+        {loading && <div className="text-sm text-[#4a7060] py-12 text-center">Loading…</div>}
 
         {!loading && !error && leads.length === 0 && (
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm border-dashed p-16 text-center">
-            <p className="text-gray-400 text-sm mb-4">No inbound leads yet.</p>
+          <div className="bg-[#132019] rounded-xl border border-dashed border-[#1e3328] p-16 text-center">
+            <p className="text-[#4a7060] text-sm mb-4">No inbound leads yet.</p>
             <a
-              href="/inbound/test"
-              className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
+              href="/dashboard/inbound/test"
+              className="inline-flex items-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all"
             >
               Submit a test lead
             </a>
@@ -147,41 +146,41 @@ export default function InboundPage() {
         )}
 
         {!loading && leads.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
+          <div className="bg-[#132019] rounded-xl border border-[#1e3328] overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#1B3A35]">
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Name</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Email</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Deal Size</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Asset Type</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Location</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Priority</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Received</th>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Deal Size</th>
+                  <th>Asset Type</th>
+                  <th>Location</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Received</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody>
                 {leads.map(lead => (
                   <tr
                     key={lead.id}
                     onClick={() => setSelected(lead)}
-                    className={`hover:bg-green-50 transition-colors duration-100 cursor-pointer ${selected?.id === lead.id ? 'bg-green-50' : ''}`}
+                    className={`cursor-pointer transition-colors ${selected?.id === lead.id ? 'bg-[rgba(201,168,76,0.06)]' : ''}`}
                   >
-                    <td className="px-4 py-3 font-medium text-[#2C2C2C]">{lead.name ?? '—'}</td>
-                    <td className="px-4 py-3 text-gray-500">{lead.email ?? '—'}</td>
-                    <td className="px-4 py-3 text-gray-600">
-                      {lead.deal_size ? formatMoney(lead.deal_size) : <span className="text-gray-300">—</span>}
+                    <td className="font-medium text-[#f0ebe0]">{lead.name ?? '—'}</td>
+                    <td className="text-[#8aab95]">{lead.email ?? '—'}</td>
+                    <td className="text-[#8aab95]">
+                      {lead.deal_size ? formatMoney(lead.deal_size) : <span className="text-[#2a4535]">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{lead.asset_type ?? <span className="text-gray-300">—</span>}</td>
-                    <td className="px-4 py-3 text-gray-600 max-w-[120px] truncate">{lead.location ?? <span className="text-gray-300">—</span>}</td>
+                    <td className="text-[#8aab95]">{lead.asset_type ?? <span className="text-[#2a4535]">—</span>}</td>
+                    <td className="text-[#8aab95] max-w-[120px] truncate">{lead.location ?? <span className="text-[#2a4535]">—</span>}</td>
                     <td className="px-4 py-3">
                       <Badge value={lead.priority} styleMap={PRIORITY_STYLES} />
                     </td>
                     <td className="px-4 py-3">
                       <Badge value={lead.status} styleMap={STATUS_STYLES} />
                     </td>
-                    <td className="px-4 py-3 text-gray-400 whitespace-nowrap text-xs">
+                    <td className="text-[#4a7060] whitespace-nowrap text-xs">
                       {new Date(lead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                     </td>
                   </tr>
@@ -194,10 +193,10 @@ export default function InboundPage() {
 
       {/* ── Detail Panel ── */}
       {selected && (
-        <aside className="w-[460px] flex-shrink-0 border-l border-gray-200 bg-white overflow-y-auto flex flex-col">
-          <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-start justify-between gap-3">
+        <aside className="w-[460px] flex-shrink-0 border-l border-[#1e3328] bg-[#0e1c17] overflow-y-auto flex flex-col">
+          <div className="sticky top-0 bg-[#0e1c17] border-b border-[#1e3328] px-6 py-4 flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-semibold text-[#2C2C2C] truncate">{selected.name ?? 'Unknown'}</p>
+              <p className="font-semibold text-[#f0ebe0] truncate">{selected.name ?? 'Unknown'}</p>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge value={selected.priority} styleMap={PRIORITY_STYLES} />
                 <Badge value={selected.status} styleMap={STATUS_STYLES} />
@@ -205,7 +204,7 @@ export default function InboundPage() {
             </div>
             <button
               onClick={() => setSelected(null)}
-              className="text-gray-400 hover:text-gray-600 flex-shrink-0 mt-0.5 transition-colors"
+              className="text-[#4a7060] hover:text-[#c9a84c] flex-shrink-0 mt-0.5 transition-colors"
               aria-label="Close panel"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -236,14 +235,14 @@ export default function InboundPage() {
             {selected.additional_info && (
               <section>
                 <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Additional Info</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">{selected.additional_info}</p>
+                <p className="text-sm text-[#8aab95] leading-relaxed">{selected.additional_info}</p>
               </section>
             )}
 
             {selected.priority_reason && (
               <section>
                 <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Priority Reason</h3>
-                <p className="text-sm text-gray-600">{selected.priority_reason}</p>
+                <p className="text-sm text-[#8aab95]">{selected.priority_reason}</p>
               </section>
             )}
 
@@ -251,7 +250,7 @@ export default function InboundPage() {
               <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Update Status</h3>
               <div className="flex gap-2">
                 <select
-                  className="input flex-1"
+                  className="flex-1 bg-[#0b1612] border border-[#1e3328] rounded-lg px-4 py-2.5 text-sm text-[#f0ebe0] focus:outline-none focus:border-[#c9a84c]/50"
                   value={statusValue}
                   onChange={e => setStatusValue(e.target.value)}
                 >
@@ -263,7 +262,7 @@ export default function InboundPage() {
                 <button
                   onClick={handleStatusSave}
                   disabled={statusSaving || statusValue === (selected.status ?? 'new')}
-                  className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                  className="flex-shrink-0 px-4 py-2.5 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] disabled:opacity-40 transition-all"
                 >
                   {statusSaving ? 'Saving…' : 'Save'}
                 </button>
@@ -276,7 +275,7 @@ export default function InboundPage() {
                   <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest">AI Draft Response</h3>
                   <button
                     onClick={handleCopy}
-                    className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-[#1B3A35] transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-medium text-[#4a7060] hover:text-[#c9a84c] transition-colors"
                   >
                     {copied ? (
                       <span className="text-emerald-600">Copied</span>
@@ -290,13 +289,13 @@ export default function InboundPage() {
                     )}
                   </button>
                 </div>
-                <div className="bg-gray-50 border border-gray-100 rounded-lg p-4">
-                  <pre className="text-sm text-[#2C2C2C] whitespace-pre-wrap font-sans leading-relaxed">{selected.ai_draft_response}</pre>
+                <div className="bg-[#0b1612] border border-[#1e3328] rounded-xl p-4">
+                  <pre className="text-sm text-[#f0ebe0] whitespace-pre-wrap font-sans leading-relaxed">{selected.ai_draft_response}</pre>
                 </div>
               </section>
             )}
 
-            <p className="text-xs text-gray-300 pb-2">
+            <p className="text-xs text-[#2a4535] pb-2">
               Received {new Date(selected.created_at).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </p>
           </div>
@@ -309,8 +308,8 @@ export default function InboundPage() {
 function Row({ label, value }: { label: string; value: string | null | undefined }) {
   return (
     <div className="flex gap-3 text-sm">
-      <dt className="text-gray-400 w-24 flex-shrink-0">{label}</dt>
-      <dd className="text-[#2C2C2C]">{value ?? <span className="text-gray-300">—</span>}</dd>
+      <dt className="text-[#4a7060] w-24 flex-shrink-0">{label}</dt>
+      <dd className="text-[#f0ebe0]">{value ?? <span className="text-[#2a4535]">—</span>}</dd>
     </div>
   );
 }

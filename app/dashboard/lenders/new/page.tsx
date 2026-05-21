@@ -6,10 +6,10 @@ export default function NewLenderPage() {
   return (
     <div className="p-8 max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-serif font-semibold text-[#1B3A35]">Add Lender</h1>
-        <p className="text-gray-500 mt-1 text-sm">Create a new lender record in the database.</p>
+        <h1 className="font-display text-[2rem] font-light italic text-[#f0ebe0]">Add Lender</h1>
+        <p className="text-[#4a7060] mt-1 text-sm">Create a new lender record in the database.</p>
       </div>
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+      <div className="bg-[#132019] rounded-xl border border-[#1e3328] p-6">
         <LenderForm mode="create" />
       </div>
     </div>

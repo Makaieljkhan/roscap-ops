@@ -72,7 +72,7 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
     if (!confirm(`Delete ${contact?.full_name}? This cannot be undone.`)) return;
     setDeleting(true);
     await fetch(`/api/crm/contacts/${params.id}`, { method: 'DELETE' });
-    router.push('/crm');
+    router.push('/dashboard/crm');
   }
 
   if (loading) return <div className="p-8 text-sm text-gray-400">Loading…</div>;
@@ -117,7 +117,7 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
       {/* Header */}
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <Link href="/crm" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
+          <Link href="/dashboard/crm" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
             ← Contacts
           </Link>
           <h1 className="text-2xl font-serif font-semibold text-[#1B3A35] mt-2">{contact.full_name}</h1>
@@ -138,7 +138,7 @@ export default function ContactDetailPage({ params }: { params: { id: string } }
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={() => setEditing(true)}
-            className="bg-[#1B3A35] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200"
+            className="btn-primary"
           >
             Edit
           </button>

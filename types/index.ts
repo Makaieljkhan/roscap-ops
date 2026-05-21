@@ -61,10 +61,10 @@ export const LENDER_STATUS_LABELS: Record<LenderStatus, string> = {
 };
 
 export const LENDER_STATUS_COLORS: Record<LenderStatus, string> = {
-  hungry: 'bg-green-100 text-green-800',
-  selective: 'bg-yellow-100 text-yellow-800',
-  quiet: 'bg-gray-100 text-gray-600',
-  changing: 'bg-orange-100 text-orange-700',
+  hungry: 'bg-emerald-950/60 text-emerald-300 border-emerald-800/50',
+  selective: 'bg-amber-950/60 text-amber-300 border-amber-800/50',
+  quiet: 'bg-[#1a2e22] text-[#8aab95] border-[#1e3328]',
+  changing: 'bg-orange-950/60 text-orange-300 border-orange-800/50',
 };
 
 export const LENDER_STATUSES: LenderStatus[] = ['hungry', 'selective', 'quiet', 'changing'];

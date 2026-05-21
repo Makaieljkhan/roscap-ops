@@ -102,7 +102,7 @@ export default function ContactForm({ mode, initialData, onSuccess, onCancel }: 
       if (onSuccess) {
         onSuccess(data);
       } else {
-        router.push('/crm');
+        router.push('/dashboard/crm');
       }
     } catch {
       setError('Network error — please try again.');
@@ -214,7 +214,7 @@ export default function ContactForm({ mode, initialData, onSuccess, onCancel }: 
         <button
           type="submit"
           disabled={loading}
-          className="bg-[#1B3A35] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#C9A84C] hover:text-[#1B3A35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all-lg"
         >
           {loading ? 'Saving…' : mode === 'create' ? 'Add Contact' : 'Save Changes'}
         </button>
@@ -222,7 +222,7 @@ export default function ContactForm({ mode, initialData, onSuccess, onCancel }: 
           <button
             type="button"
             onClick={onCancel}
-            className="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+            className="px-5 py-2.5 rounded-lg text-sm font-medium text-[#8aab95] hover:bg-[#1a2e22] transition-colors"
           >
             Cancel
           </button>

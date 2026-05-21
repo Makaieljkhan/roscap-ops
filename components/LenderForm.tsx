@@ -125,7 +125,7 @@ export default function LenderForm({ lender, mode }: Props) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Save failed');
-      router.push('/lenders');
+      router.push('/dashboard/lenders');
       router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
@@ -143,7 +143,7 @@ export default function LenderForm({ lender, mode }: Props) {
         const data = await res.json();
         throw new Error(data.error || 'Delete failed');
       }
-      router.push('/lenders');
+      router.push('/dashboard/lenders');
       router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Delete failed');
@@ -232,7 +232,7 @@ export default function LenderForm({ lender, mode }: Props) {
           <button
             type="button"
             onClick={addCustomAsset}
-            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-colors"
+            className="px-4 py-2 bg-[#1a2e22] text-[#8aab95] rounded-lg text-sm hover:bg-[#1a2e22] transition-colors"
           >
             Add
           </button>
@@ -371,10 +371,10 @@ export default function LenderForm({ lender, mode }: Props) {
         {form.key_contacts.length > 0 && (
           <div className="space-y-2 mb-4">
             {form.key_contacts.map((contact, i) => (
-              <div key={i} className="flex items-start justify-between bg-gray-50 rounded-lg px-4 py-3 gap-4">
+              <div key={i} className="flex items-start justify-between bg-[#0b1612] rounded-lg px-4 py-3 gap-4">
                 <div className="text-sm">
-                  <p className="font-medium text-gray-900">{contact.name}</p>
-                  <p className="text-gray-500 text-xs mt-0.5">
+                  <p className="font-medium text-[#f0ebe0]">{contact.name}</p>
+                  <p className="text-[#4a7060] text-xs mt-0.5">
                     {[contact.role, contact.phone, contact.email].filter(Boolean).join(' · ')}
                   </p>
                 </div>
@@ -389,8 +389,8 @@ export default function LenderForm({ lender, mode }: Props) {
             ))}
           </div>
         )}
-        <div className="border border-dashed border-gray-200 rounded-lg p-4 space-y-3">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Add Contact</p>
+        <div className="border border-dashed border-[#1e3328] rounded-lg p-4 space-y-3">
+          <p className="text-xs font-medium text-[#4a7060] uppercase tracking-wide">Add Contact</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <input
               className="input"
@@ -422,7 +422,7 @@ export default function LenderForm({ lender, mode }: Props) {
             type="button"
             onClick={addContact}
             disabled={!draftContact.name.trim()}
-            className="text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 disabled:opacity-40 px-4 py-1.5 rounded-lg transition-colors"
+            className="text-sm text-[#8aab95] bg-[#1a2e22] hover:bg-[#1a2e22] disabled:opacity-40 px-4 py-1.5 rounded-lg transition-colors"
           >
             + Add Contact
           </button>
@@ -459,14 +459,14 @@ export default function LenderForm({ lender, mode }: Props) {
           <button
             type="submit"
             disabled={saving}
-            className="bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="bg-[#c9a84c] text-[#0b1612] font-semibold px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#e2c47a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {saving ? 'Saving…' : mode === 'create' ? 'Create Lender' : 'Save Changes'}
           </button>
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-5 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+            className="px-5 py-2.5 rounded-lg text-sm text-[#8aab95] hover:bg-[#1a2e22] transition-colors"
           >
             Cancel
           </button>
@@ -489,7 +489,7 @@ export default function LenderForm({ lender, mode }: Props) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4 pb-2 border-b border-gray-100">
+      <h2 className="text-sm font-semibold text-[#8aab95] uppercase tracking-wide mb-4 pb-2 border-b border-[#1e3328]">
         {title}
       </h2>
       {children}
@@ -504,8 +504,8 @@ function CheckPill({ label, checked, onChange }: { label: string; checked: boole
       onClick={onChange}
       className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${
         checked
-          ? 'bg-gray-900 border-gray-900 text-white'
-          : 'bg-white border-gray-200 text-gray-600 hover:border-gray-400'
+          ? 'bg-[#c9a84c] border-[#c9a84c] text-[#0b1612]'
+          : 'bg-[#0e1c17] border-[#1e3328] text-[#8aab95] hover:border-[#c9a84c]/40'
       }`}
     >
       {label}
