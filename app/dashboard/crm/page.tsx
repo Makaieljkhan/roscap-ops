@@ -61,10 +61,10 @@ const TYPE_STYLES_SELECTED: Record<string, string> = {
 };
 
 const REMINDER_STYLES: Record<string, string> = {
-  anniversary: 'bg-sky-950/60 text-sky-300 border border-sky-800/50',
-  birthday: 'bg-pink-950/60 text-pink-300 border border-pink-800/50',
-  dormancy: 'bg-[#1a2e22] text-[#8aab95] border border-[#1e3328]',
-  pipeline: 'bg-purple-950/60 text-purple-300 border border-purple-800/50',
+  anniversary: 'bg-sky-50 text-sky-700 border border-sky-200',
+  birthday: 'bg-pink-50 text-pink-700 border border-pink-200',
+  dormancy: 'bg-amber-50 text-amber-700 border border-amber-200',
+  pipeline: 'bg-blue-50 text-blue-700 border border-blue-200',
 };
 
 const REMINDER_LABELS: Record<string, string> = {
@@ -415,30 +415,30 @@ export default function CRMPage() {
         </aside>
       ) : (
         /* ── Reminders Panel ── */
-        <aside className="w-80 flex-shrink-0 border-l border-[#1e3328] bg-[#132019] overflow-y-auto flex flex-col">
-          <div className="sticky top-0 bg-[#132019] border-b border-[#1e3328] px-5 py-4">
+        <aside className="w-80 flex-shrink-0 border-l border-[#ddd6c8] bg-[#f5f0e8] overflow-y-auto flex flex-col">
+          <div className="sticky top-0 bg-[#f5f0e8] border-b border-[#ddd6c8] px-5 py-4">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="font-semibold text-[#f0ebe0] text-sm">Reminders</p>
-                <p className="text-xs text-[#4a7060] mt-0.5">{reminders.length} pending</p>
+                <p className="text-[#0d2b1f] font-semibold">Reminders</p>
+                <p className="text-[#7a9080] text-sm mt-0.5">{reminders.length} pending</p>
               </div>
               <button
                 onClick={handleGenerate}
                 disabled={generating}
-                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all text-xs px-3 py-1.5"
+                className="bg-[#c9a84c] text-[#0d2b1f] font-semibold rounded-lg px-4 py-2 hover:bg-[#e2c47a] transition-all text-sm disabled:opacity-50"
               >
                 {generating ? 'Running…' : 'Generate'}
               </button>
             </div>
             {generateResult && (
-              <p className="text-xs text-[#4a7060] bg-[#0b1612] rounded-lg px-3 py-2">{generateResult}</p>
+              <p className="text-xs text-[#3d5a4a] bg-white border border-[#ddd6c8] rounded-lg px-3 py-2">{generateResult}</p>
             )}
           </div>
 
           <div className="flex-1 px-4 py-4 space-y-3">
-            {loadingReminders && <p className="text-xs text-[#4a7060] text-center py-8">Loading…</p>}
+            {loadingReminders && <p className="text-[#7a9080] text-sm text-center py-8">Loading…</p>}
             {!loadingReminders && reminders.length === 0 && (
-              <p className="text-xs text-[#4a7060] text-center py-8">
+              <p className="text-[#7a9080] text-sm text-center py-8">
                 No pending reminders. Click Generate to check for new ones.
               </p>
             )}
@@ -457,17 +457,17 @@ function ReminderCard({ reminder, onDismiss }: { reminder: Reminder; onDismiss: 
   const contactName = reminder.contacts?.full_name ?? 'Unknown';
 
   return (
-    <div className="bg-[#0b1612] border border-[#1e3328] rounded-xl p-4 space-y-2">
+    <div className="bg-white border border-[#ddd6c8] rounded-xl p-4 shadow-sm space-y-2">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-[#f0ebe0] truncate">{contactName}</p>
+          <p className="text-[#0d2b1f] font-semibold text-sm truncate">{contactName}</p>
           {reminder.contacts?.company && (
-            <p className="text-xs text-[#4a7060] truncate">{reminder.contacts.company}</p>
+            <p className="text-[#7a9080] text-xs truncate">{reminder.contacts.company}</p>
           )}
         </div>
         <button
           onClick={() => onDismiss(reminder.id)}
-          className="text-gray-300 hover:text-[#4a7060] transition-colors flex-shrink-0 mt-0.5"
+          className="text-[#7a9080] hover:text-[#0d2b1f] transition-colors flex-shrink-0 mt-0.5"
           aria-label="Dismiss"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -477,23 +477,28 @@ function ReminderCard({ reminder, onDismiss }: { reminder: Reminder; onDismiss: 
       </div>
 
       <div className="flex items-center gap-2">
-        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${REMINDER_STYLES[reminder.reminder_type] ?? 'bg-gray-100 text-gray-600'}`}>
+        <span
+          className={`rounded-full px-2.5 py-0.5 text-xs font-medium border ${
+            REMINDER_STYLES[reminder.reminder_type] ?? 'bg-gray-50 text-gray-600 border-gray-200'
+          }`}
+        >
           {REMINDER_LABELS[reminder.reminder_type]}
         </span>
-        <span className="text-xs text-[#4a7060]">
+        <span className="text-[#7a9080] text-xs">
           {new Date(reminder.due_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
         </span>
       </div>
 
       {reminder.ai_draft_message && (
         <div>
-          <p className={`text-xs text-gray-600 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+          <p className={`text-[#3d5a4a] text-sm leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
             {reminder.ai_draft_message}
           </p>
           {reminder.ai_draft_message.length > 120 && (
             <button
+              type="button"
               onClick={() => setExpanded(e => !e)}
-              className="text-xs text-[#4a7060] hover:text-[#f0ebe0] mt-1 transition-colors"
+              className="text-[#c9a84c] text-xs font-medium hover:underline cursor-pointer mt-1"
             >
               {expanded ? 'Show less' : 'Show more'}
             </button>
