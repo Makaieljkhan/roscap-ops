@@ -8,6 +8,7 @@ import {
   LENDER_STATUS_LABELS,
   COMMON_ASSET_CLASSES,
 } from '@/types';
+import { Card, Button, Input, Textarea, Select, SectionTitle } from '@/components/ui';
 
 interface Props {
   lender?: Lender;
@@ -35,6 +36,11 @@ const EMPTY_FORM: LenderInsert = {
 };
 
 const EMPTY_CONTACT = { name: '', role: '', phone: '', email: '' };
+
+const STATUS_OPTIONS = [
+  { value: '', label: '— select —' },
+  ...LENDER_STATUSES.map((s) => ({ value: s, label: LENDER_STATUS_LABELS[s] })),
+];
 
 export default function LenderForm({ lender, mode }: Props) {
   const router = useRouter();
@@ -152,65 +158,49 @@ export default function LenderForm({ lender, mode }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-600">
           {error}
         </div>
       )}
 
-      {/* Identity */}
-      <Section title="Lender Identity">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div>
-            <label className="label">Legal / Full Name</label>
-            <input
-              required
-              className="input"
-              placeholder="e.g. Pepper Money Limited"
-              value={form.lender_name}
-              onChange={(e) => setForm({ ...form, lender_name: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="label">Common Name</label>
-            <input
-              className="input"
-              placeholder="e.g. Pepper"
-              value={form.common_name ?? ''}
-              onChange={(e) => setForm({ ...form, common_name: e.target.value || null })}
-            />
-          </div>
-          <div>
-            <label className="label">Current Status</label>
-            <select
-              className="input"
-              value={form.current_status ?? ''}
-              onChange={(e) =>
-                setForm({ ...form, current_status: (e.target.value as LenderStatus) || null })
-              }
-            >
-              <option value="">— select —</option>
-              {LENDER_STATUSES.map((s) => (
-                <option key={s} value={s}>{LENDER_STATUS_LABELS[s]}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="label">Geography</label>
-            <input
-              className="input"
-              placeholder="e.g. National, Eastern Seaboard, NSW/VIC only"
-              value={form.geography ?? ''}
-              onChange={(e) => setForm({ ...form, geography: e.target.value || null })}
-            />
-          </div>
+      <Card>
+        <SectionTitle>Lender Identity</SectionTitle>
+        <div className="grid grid-cols-2 gap-5">
+          <Input
+            label="Legal / Full Name"
+            required
+            placeholder="e.g. Pepper Money Limited"
+            value={form.lender_name}
+            onChange={(e) => setForm({ ...form, lender_name: e.target.value })}
+          />
+          <Input
+            label="Common Name"
+            placeholder="e.g. Pepper"
+            value={form.common_name ?? ''}
+            onChange={(e) => setForm({ ...form, common_name: e.target.value || null })}
+          />
+          <Select
+            label="Current Status"
+            options={STATUS_OPTIONS}
+            value={form.current_status ?? ''}
+            onChange={(e) =>
+              setForm({ ...form, current_status: (e.target.value as LenderStatus) || null })
+            }
+          />
+          <Input
+            label="Geography"
+            placeholder="e.g. National, London & South East"
+            value={form.geography ?? ''}
+            onChange={(e) => setForm({ ...form, geography: e.target.value || null })}
+          />
         </div>
-      </Section>
+      </Card>
 
-      {/* Asset Class Appetite */}
-      <Section title="Asset Class Appetite">
-        <div className="flex flex-wrap gap-2 mb-3">
+      <Card>
+        <SectionTitle>Asset Class Appetite</SectionTitle>
+        <div className="flex flex-wrap gap-2 mb-4">
           {COMMON_ASSET_CLASSES.map((cls) => (
             <CheckPill
               key={cls}
@@ -220,36 +210,44 @@ export default function LenderForm({ lender, mode }: Props) {
             />
           ))}
         </div>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            className="input flex-1"
+        <div className="grid grid-cols-2 gap-5">
+          <Input
+            label="Custom Asset Class"
             placeholder="Add custom asset class…"
             value={customAsset}
             onChange={(e) => setCustomAsset(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCustomAsset(); } }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                addCustomAsset();
+              }
+            }}
           />
-          <button
-            type="button"
-            onClick={addCustomAsset}
-            className="px-4 py-2 bg-[#1a2e22] text-[#8aab95] rounded-lg text-sm hover:bg-[#1a2e22] transition-colors"
-          >
-            Add
-          </button>
+          <div className="flex items-end">
+            <Button type="button" variant="ghost" onClick={addCustomAsset} className="w-full">
+              Add Class
+            </Button>
+          </div>
         </div>
         {form.asset_class_appetite.filter((a) => !COMMON_ASSET_CLASSES.includes(a)).length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-2 mt-4">
             {form.asset_class_appetite
               .filter((a) => !COMMON_ASSET_CLASSES.includes(a))
               .map((a) => (
-                <span key={a} className="inline-flex items-center gap-1 text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full">
+                <span
+                  key={a}
+                  className="inline-flex items-center gap-1 text-sm bg-[#0d2b1f] text-white border border-[#0d2b1f] rounded-full px-3 py-1.5"
+                >
                   {a}
                   <button
                     type="button"
                     onClick={() =>
-                      setForm({ ...form, asset_class_appetite: form.asset_class_appetite.filter((x) => x !== a) })
+                      setForm({
+                        ...form,
+                        asset_class_appetite: form.asset_class_appetite.filter((x) => x !== a),
+                      })
                     }
-                    className="ml-0.5 text-indigo-400 hover:text-indigo-700"
+                    className="ml-0.5 opacity-70 hover:opacity-100"
                   >
                     ×
                   </button>
@@ -257,131 +255,109 @@ export default function LenderForm({ lender, mode }: Props) {
               ))}
           </div>
         )}
-      </Section>
+      </Card>
 
-      {/* Deal Parameters */}
-      <Section title="Deal Parameters">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-          <div>
-            <label className="label">Min Deal Size ($)</label>
-            <input
-              type="number"
-              min={0}
-              step={50000}
-              className="input"
-              placeholder="e.g. 500000"
-              value={numVal(form.deal_size_min)}
-              onChange={(e) => setForm({ ...form, deal_size_min: parseNum(e.target.value) })}
-            />
-          </div>
-          <div>
-            <label className="label">Max Deal Size ($)</label>
-            <input
-              type="number"
-              min={0}
-              step={50000}
-              className="input"
-              placeholder="e.g. 20000000"
-              value={numVal(form.deal_size_max)}
-              onChange={(e) => setForm({ ...form, deal_size_max: parseNum(e.target.value) })}
-            />
-          </div>
-          <div>
-            <label className="label">LTV Standard (%)</label>
-            <input
-              type="number"
-              min={0}
-              max={100}
-              step={0.5}
-              className="input"
-              placeholder="e.g. 65"
-              value={numVal(form.ltv_standard)}
-              onChange={(e) => setForm({ ...form, ltv_standard: parseNum(e.target.value) })}
-            />
-          </div>
-          <div>
-            <label className="label">LTV Stretch (%)</label>
-            <input
-              type="number"
-              min={0}
-              max={100}
-              step={0.5}
-              className="input"
-              placeholder="e.g. 75"
-              value={numVal(form.ltv_stretch)}
-              onChange={(e) => setForm({ ...form, ltv_stretch: parseNum(e.target.value) })}
-            />
-          </div>
-          <div>
-            <label className="label">Rate Low (%)</label>
-            <input
-              type="number"
-              min={0}
-              step={0.01}
-              className="input"
-              placeholder="e.g. 6.5"
-              value={numVal(form.rate_range_low)}
-              onChange={(e) => setForm({ ...form, rate_range_low: parseNum(e.target.value) })}
-            />
-          </div>
-          <div>
-            <label className="label">Rate High (%)</label>
-            <input
-              type="number"
-              min={0}
-              step={0.01}
-              className="input"
-              placeholder="e.g. 9.5"
-              value={numVal(form.rate_range_high)}
-              onChange={(e) => setForm({ ...form, rate_range_high: parseNum(e.target.value) })}
-            />
-          </div>
-          <div>
-            <label className="label">Arrangement Fee</label>
-            <input
-              className="input"
-              placeholder="e.g. 1.5%, negotiable"
-              value={form.arrangement_fee ?? ''}
-              onChange={(e) => setForm({ ...form, arrangement_fee: e.target.value || null })}
-            />
-          </div>
-          <div>
-            <label className="label">Exit Fee</label>
-            <input
-              className="input"
-              placeholder="e.g. Nil, 1% if < 12 months"
-              value={form.exit_fee ?? ''}
-              onChange={(e) => setForm({ ...form, exit_fee: e.target.value || null })}
-            />
-          </div>
+      <Card>
+        <SectionTitle>Deal Parameters</SectionTitle>
+        <div className="grid grid-cols-2 gap-5">
+          <Input
+            label="Min Deal Size (£)"
+            type="number"
+            min={0}
+            step={50000}
+            placeholder="e.g. 500000"
+            value={numVal(form.deal_size_min)}
+            onChange={(e) => setForm({ ...form, deal_size_min: parseNum(e.target.value) })}
+          />
+          <Input
+            label="Max Deal Size (£)"
+            type="number"
+            min={0}
+            step={50000}
+            placeholder="e.g. 20000000"
+            value={numVal(form.deal_size_max)}
+            onChange={(e) => setForm({ ...form, deal_size_max: parseNum(e.target.value) })}
+          />
+          <Input
+            label="LTV Standard (%)"
+            type="number"
+            min={0}
+            max={100}
+            step={0.5}
+            placeholder="e.g. 65"
+            value={numVal(form.ltv_standard)}
+            onChange={(e) => setForm({ ...form, ltv_standard: parseNum(e.target.value) })}
+          />
+          <Input
+            label="LTV Stretch (%)"
+            type="number"
+            min={0}
+            max={100}
+            step={0.5}
+            placeholder="e.g. 75"
+            value={numVal(form.ltv_stretch)}
+            onChange={(e) => setForm({ ...form, ltv_stretch: parseNum(e.target.value) })}
+          />
+          <Input
+            label="Rate Low (%)"
+            type="number"
+            min={0}
+            step={0.01}
+            placeholder="e.g. 6.5"
+            value={numVal(form.rate_range_low)}
+            onChange={(e) => setForm({ ...form, rate_range_low: parseNum(e.target.value) })}
+          />
+          <Input
+            label="Rate High (%)"
+            type="number"
+            min={0}
+            step={0.01}
+            placeholder="e.g. 9.5"
+            value={numVal(form.rate_range_high)}
+            onChange={(e) => setForm({ ...form, rate_range_high: parseNum(e.target.value) })}
+          />
+          <Input
+            label="Arrangement Fee"
+            placeholder="e.g. 1.5%, negotiable"
+            value={form.arrangement_fee ?? ''}
+            onChange={(e) => setForm({ ...form, arrangement_fee: e.target.value || null })}
+          />
+          <Input
+            label="Exit Fee"
+            placeholder="e.g. Nil, 1% if < 12 months"
+            value={form.exit_fee ?? ''}
+            onChange={(e) => setForm({ ...form, exit_fee: e.target.value || null })}
+          />
         </div>
         <div className="mt-5">
-          <label className="label">Turnaround Speed</label>
-          <input
-            className="input"
+          <Input
+            label="Turnaround Speed"
             placeholder="e.g. 3–5 business days to indicative, 2–3 weeks to formal"
             value={form.turnaround_speed ?? ''}
             onChange={(e) => setForm({ ...form, turnaround_speed: e.target.value || null })}
           />
         </div>
-      </Section>
+      </Card>
 
-      {/* Key Contacts */}
-      <Section title="Key Contacts">
+      <Card>
+        <SectionTitle>Key Contacts</SectionTitle>
         {form.key_contacts.length > 0 && (
           <div className="space-y-2 mb-4">
             {form.key_contacts.map((contact, i) => (
-              <div key={i} className="flex items-start justify-between bg-[#0b1612] rounded-lg px-4 py-3 gap-4">
+              <div
+                key={i}
+                className="flex items-start justify-between bg-[#f5f0e8] border border-[#ddd6c8] rounded-lg px-4 py-3 gap-4"
+              >
                 <div className="text-sm">
-                  <p className="font-medium text-[#f0ebe0]">{contact.name}</p>
-                  <p className="text-[#4a7060] text-xs mt-0.5">
+                  <p className="font-medium text-[#0d2b1f]">{contact.name}</p>
+                  <p className="text-[#7a9080] text-xs mt-0.5">
                     {[contact.role, contact.phone, contact.email].filter(Boolean).join(' · ')}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => removeContact(i)}
-                  className="text-xs text-red-400 hover:text-red-600 flex-shrink-0"
+                  className="text-xs text-red-500 hover:text-red-700 flex-shrink-0"
                 >
                   Remove
                 </button>
@@ -389,123 +365,106 @@ export default function LenderForm({ lender, mode }: Props) {
             ))}
           </div>
         )}
-        <div className="border border-dashed border-[#1e3328] rounded-lg p-4 space-y-3">
-          <p className="text-xs font-medium text-[#4a7060] uppercase tracking-wide">Add Contact</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <input
-              className="input"
-              placeholder="Name *"
+        <div className="border border-dashed border-[#ddd6c8] rounded-lg p-4 space-y-4 bg-[#faf8f4]">
+          <p className="text-xs font-semibold text-[#3d5a4a] uppercase tracking-wider">Add Contact</p>
+          <div className="grid grid-cols-2 gap-5">
+            <Input
+              label="Name"
+              required
+              placeholder="Contact name"
               value={draftContact.name}
               onChange={(e) => setDraftContact({ ...draftContact, name: e.target.value })}
             />
-            <input
-              className="input"
-              placeholder="Role / Title"
+            <Input
+              label="Role / Title"
+              placeholder="e.g. BDM"
               value={draftContact.role}
               onChange={(e) => setDraftContact({ ...draftContact, role: e.target.value })}
             />
-            <input
-              className="input"
-              placeholder="Phone"
+            <Input
+              label="Phone"
+              placeholder="Phone number"
               value={draftContact.phone}
               onChange={(e) => setDraftContact({ ...draftContact, phone: e.target.value })}
             />
-            <input
+            <Input
+              label="Email"
               type="email"
-              className="input"
-              placeholder="Email"
+              placeholder="email@lender.com"
               value={draftContact.email}
               onChange={(e) => setDraftContact({ ...draftContact, email: e.target.value })}
             />
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="sm"
             onClick={addContact}
             disabled={!draftContact.name.trim()}
-            className="text-sm text-[#8aab95] bg-[#1a2e22] hover:bg-[#1a2e22] disabled:opacity-40 px-4 py-1.5 rounded-lg transition-colors"
           >
             + Add Contact
-          </button>
+          </Button>
         </div>
-      </Section>
+      </Card>
 
-      {/* Intelligence */}
-      <Section title="Deal Intelligence">
-        <div className="space-y-4">
-          <div>
-            <label className="label">Recent Deal Experience</label>
-            <textarea
-              className="input min-h-[80px] resize-y"
-              placeholder="Recent transactions this lender has funded, deal types, deal sizes, sectors…"
-              value={form.recent_deal_experience ?? ''}
-              onChange={(e) => setForm({ ...form, recent_deal_experience: e.target.value || null })}
-            />
-          </div>
-          <div>
-            <label className="label">Suleman&apos;s Notes</label>
-            <textarea
-              className="input min-h-[100px] resize-y"
-              placeholder="BDM relationships, policy quirks, appetite nuances, things to watch…"
-              value={form.suleman_notes ?? ''}
-              onChange={(e) => setForm({ ...form, suleman_notes: e.target.value || null })}
-            />
-          </div>
-        </div>
-      </Section>
+      <Card>
+        <SectionTitle>Deal Intelligence</SectionTitle>
+        <Textarea
+          label="Recent Deal Experience"
+          rows={4}
+          placeholder="Recent transactions this lender has funded, deal types, deal sizes, sectors…"
+          value={form.recent_deal_experience ?? ''}
+          onChange={(e) => setForm({ ...form, recent_deal_experience: e.target.value || null })}
+        />
+      </Card>
 
-      {/* Actions */}
+      <Card>
+        <SectionTitle>Comments</SectionTitle>
+        <Textarea
+          label="Comments"
+          rows={5}
+          placeholder="Add any notes, observations, or context about this lender…"
+          value={form.suleman_notes ?? ''}
+          onChange={(e) => setForm({ ...form, suleman_notes: e.target.value || null })}
+        />
+      </Card>
+
       <div className="flex items-center justify-between pt-2">
         <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={saving}
-            className="bg-[#c9a84c] text-[#0b1612] font-semibold px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#e2c47a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {saving ? 'Saving…' : mode === 'create' ? 'Create Lender' : 'Save Changes'}
-          </button>
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="px-5 py-2.5 rounded-lg text-sm text-[#8aab95] hover:bg-[#1a2e22] transition-colors"
-          >
+          <Button type="submit" loading={saving}>
+            {mode === 'create' ? 'Create Lender' : 'Save Changes'}
+          </Button>
+          <Button type="button" variant="ghost" onClick={() => router.back()}>
             Cancel
-          </button>
+          </Button>
         </div>
         {mode === 'edit' && (
-          <button
-            type="button"
-            onClick={handleDelete}
-            disabled={deleting}
-            className="px-4 py-2.5 rounded-lg text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 transition-colors"
-          >
-            {deleting ? 'Deleting…' : 'Delete Lender'}
-          </button>
+          <Button type="button" variant="danger" onClick={handleDelete} loading={deleting}>
+            Delete Lender
+          </Button>
         )}
       </div>
     </form>
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h2 className="text-sm font-semibold text-[#8aab95] uppercase tracking-wide mb-4 pb-2 border-b border-[#1e3328]">
-        {title}
-      </h2>
-      {children}
-    </div>
-  );
-}
-
-function CheckPill({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
+function CheckPill({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+}) {
   return (
     <button
       type="button"
       onClick={onChange}
-      className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${
+      className={`rounded-full px-3 py-1.5 text-sm cursor-pointer transition-all duration-150 border ${
         checked
-          ? 'bg-[#c9a84c] border-[#c9a84c] text-[#0b1612]'
-          : 'bg-[#0e1c17] border-[#1e3328] text-[#8aab95] hover:border-[#c9a84c]/40'
+          ? 'bg-[#0d2b1f] text-white border-[#0d2b1f]'
+          : 'bg-[#f5f0e8] border-[#ddd6c8] text-[#3d5a4a] hover:border-[#c9a84c]'
       }`}
     >
       {label}

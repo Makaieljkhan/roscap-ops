@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 import { revalidatePath } from 'next/cache';
 import DeleteLenderButton from '@/components/DeleteLenderButton';
+import LenderScoreCell from '@/components/LenderScoreCell';
 import { PageHeader, Card, EmptyState } from '@/components/ui';
 import type { Lender } from '@/types';
 import { LENDER_STATUS_LABELS, LENDER_STATUS_COLORS } from '@/types';
@@ -44,7 +45,7 @@ export default async function LendersPage() {
         action={
           <Link
             href="/dashboard/lenders/new"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] shadow-[0_2px_24px_rgba(201,168,76,0.25)] transition-all duration-200"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg bg-[#0d2b1f] text-white hover:bg-[#1a4030] shadow-sm transition-all"
           >
             + Add Lender
           </Link>
@@ -52,7 +53,7 @@ export default async function LendersPage() {
       />
 
       {fetchError && (
-        <div className="bg-red-950/30 border border-red-800/40 rounded-xl p-4 text-sm text-red-300 mb-6">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-600 mb-6">
           {fetchError}
         </div>
       )}
@@ -66,7 +67,7 @@ export default async function LendersPage() {
           />
           <Link
             href="/dashboard/lenders/new"
-            className="inline-flex mt-6 items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all"
+            className="inline-flex mt-6 items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-[#0d2b1f] text-white hover:bg-[#1a4030] transition-all"
           >
             Add your first lender
           </Link>
@@ -79,6 +80,7 @@ export default async function LendersPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr>
+                  <th>Score</th>
                   <th>Lender</th>
                   <th>Status</th>
                   <th>Asset Classes</th>
@@ -93,9 +95,12 @@ export default async function LendersPage() {
                 {lenders.map((lender) => (
                   <tr key={lender.id}>
                     <td>
-                      <p className="font-medium text-[#f0ebe0]">{lender.lender_name}</p>
+                      <LenderScoreCell lender={lender} />
+                    </td>
+                    <td>
+                      <p className="font-medium text-[#0d2b1f]">{lender.lender_name}</p>
                       {lender.common_name && lender.common_name !== lender.lender_name && (
-                        <p className="text-xs text-[#4a7060] mt-0.5">{lender.common_name}</p>
+                        <p className="text-xs text-[#7a9080] mt-0.5">{lender.common_name}</p>
                       )}
                     </td>
                     <td>
@@ -106,7 +111,7 @@ export default async function LendersPage() {
                           {LENDER_STATUS_LABELS[lender.current_status]}
                         </span>
                       ) : (
-                        <span className="text-xs text-[#2a4535]">—</span>
+                        <span className="text-xs text-[#aaa]">—</span>
                       )}
                     </td>
                     <td>
@@ -114,19 +119,19 @@ export default async function LendersPage() {
                         {lender.asset_class_appetite.slice(0, 3).map((a) => (
                           <span
                             key={a}
-                            className="text-xs bg-[#1a2e22] text-[#8aab95] border border-[#1e3328] px-2 py-0.5 rounded-full whitespace-nowrap"
+                            className="text-xs bg-[#f5f0e8] text-[#3d5a4a] border border-[#ddd6c8] px-2 py-0.5 rounded-full whitespace-nowrap"
                           >
                             {a}
                           </span>
                         ))}
                         {lender.asset_class_appetite.length > 3 && (
-                          <span className="text-xs text-[#4a7060]">
+                          <span className="text-xs text-[#7a9080]">
                             +{lender.asset_class_appetite.length - 3}
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="text-[#8aab95] whitespace-nowrap">
+                    <td className="text-[#3d5a4a] whitespace-nowrap">
                       {lender.deal_size_min != null || lender.deal_size_max != null ? (
                         <>
                           {lender.deal_size_min != null ? formatMoney(lender.deal_size_min) : '—'}
@@ -134,38 +139,38 @@ export default async function LendersPage() {
                           {lender.deal_size_max != null ? formatMoney(lender.deal_size_max) : '—'}
                         </>
                       ) : (
-                        <span className="text-[#2a4535]">—</span>
+                        <span className="text-[#aaa]">—</span>
                       )}
                     </td>
-                    <td className="text-[#8aab95] whitespace-nowrap">
+                    <td className="text-[#3d5a4a] whitespace-nowrap">
                       {lender.ltv_standard != null ? (
                         <>
                           {lender.ltv_standard}%
                           {lender.ltv_stretch != null && (
-                            <span className="text-[#4a7060] text-xs"> / {lender.ltv_stretch}%</span>
+                            <span className="text-[#7a9080] text-xs"> / {lender.ltv_stretch}%</span>
                           )}
                         </>
                       ) : (
-                        <span className="text-[#2a4535]">—</span>
+                        <span className="text-[#aaa]">—</span>
                       )}
                     </td>
-                    <td className="text-[#8aab95] whitespace-nowrap">
+                    <td className="text-[#3d5a4a] whitespace-nowrap">
                       {lender.rate_range_low != null || lender.rate_range_high != null ? (
                         <>
                           {lender.rate_range_low ?? '—'}–{lender.rate_range_high ?? '—'}%
                         </>
                       ) : (
-                        <span className="text-[#2a4535]">—</span>
+                        <span className="text-[#aaa]">—</span>
                       )}
                     </td>
-                    <td className="text-[#8aab95] max-w-[140px] truncate">
-                      {lender.geography ?? <span className="text-[#2a4535]">—</span>}
+                    <td className="text-[#3d5a4a] max-w-[140px] truncate">
+                      {lender.geography ?? <span className="text-[#aaa]">—</span>}
                     </td>
                     <td className="text-right">
                       <div className="flex items-center justify-end gap-3">
                         <Link
                           href={`/dashboard/lenders/${lender.id}/edit`}
-                          className="text-xs text-[#4a7060] hover:text-[#c9a84c] transition-colors"
+                          className="text-xs text-[#7a9080] hover:text-[#0d2b1f] transition-colors"
                         >
                           Edit
                         </Link>

@@ -28,10 +28,20 @@ export interface Lender {
   key_contacts: KeyContact[];
   recent_deal_experience: string | null;
   suleman_notes: string | null;
+  ai_score: number | null;
+  ai_score_rationale: string | null;
+  ai_score_override: number | null;
 }
 
-export type LenderInsert = Omit<Lender, 'id' | 'created_at' | 'updated_at'>;
-export type LenderUpdate = Partial<LenderInsert>;
+export type LenderInsert = Omit<
+  Lender,
+  'id' | 'created_at' | 'updated_at' | 'ai_score' | 'ai_score_rationale' | 'ai_score_override'
+>;
+export type LenderUpdate = Partial<LenderInsert> & {
+  ai_score?: number | null;
+  ai_score_rationale?: string | null;
+  ai_score_override?: number | null;
+};
 
 export interface LenderMatchRequest {
   deal_size: number;
@@ -61,10 +71,10 @@ export const LENDER_STATUS_LABELS: Record<LenderStatus, string> = {
 };
 
 export const LENDER_STATUS_COLORS: Record<LenderStatus, string> = {
-  hungry: 'bg-emerald-950/60 text-emerald-300 border-emerald-800/50',
-  selective: 'bg-amber-950/60 text-amber-300 border-amber-800/50',
-  quiet: 'bg-[#1a2e22] text-[#8aab95] border-[#1e3328]',
-  changing: 'bg-orange-950/60 text-orange-300 border-orange-800/50',
+  hungry: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  selective: 'bg-amber-50 text-amber-700 border-amber-200',
+  quiet: 'bg-gray-50 text-gray-600 border-gray-200',
+  changing: 'bg-orange-50 text-orange-700 border-orange-200',
 };
 
 export const LENDER_STATUSES: LenderStatus[] = ['hungry', 'selective', 'quiet', 'changing'];

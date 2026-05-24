@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 import LenderForm from '@/components/LenderForm';
+import LenderRatingPanel from '@/components/LenderRatingPanel';
+import { PageHeader } from '@/components/ui';
 import type { Lender } from '@/types';
 
 interface Props {
@@ -28,13 +30,12 @@ export default async function EditLenderPage({ params }: Props) {
   if (!lender) notFound();
 
   return (
-    <div className="p-8 max-w-3xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-serif font-semibold text-[#1B3A35]">Edit Lender</h1>
-        <p className="text-gray-500 mt-1 text-sm">{lender.lender_name}</p>
-      </div>
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+    <div className="max-w-6xl mx-auto">
+      <PageHeader title="Edit Lender" subtitle={lender.lender_name} />
+
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-8 items-start">
         <LenderForm mode="edit" lender={lender} />
+        <LenderRatingPanel lender={lender} />
       </div>
     </div>
   );

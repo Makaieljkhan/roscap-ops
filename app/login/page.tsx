@@ -30,37 +30,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b1612] flex items-center justify-center relative overflow-hidden">
-      <motion.div
-        animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.06, 0.03] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#c9a84c] rounded-full blur-[250px] pointer-events-none"
-      />
-      <motion.div
-        animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.15, 0.08] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#1a4030] rounded-full blur-[180px] pointer-events-none"
-      />
-
+    <div className="min-h-screen bg-[#f5f0e8] flex items-center justify-center relative overflow-hidden px-4">
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.025]"
+        className="absolute inset-0 pointer-events-none opacity-[0.4]"
         style={{
           backgroundImage:
-            'linear-gradient(#c9a84c 1px,transparent 1px),linear-gradient(90deg,#c9a84c 1px,transparent 1px)',
-          backgroundSize: '80px 80px',
+            'radial-gradient(circle at 30% 20%, rgba(201,168,76,0.08) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(13,43,31,0.05) 0%, transparent 50%)',
         }}
       />
 
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-sm px-4 relative z-10"
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-sm relative z-10"
       >
         <motion.div
-          initial={{ opacity: 0, y: -16 }}
+          initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.6 }}
+          transition={{ delay: 0.1, duration: 0.6 }}
           className="text-center mb-10"
         >
           <motion.div
@@ -69,28 +57,21 @@ export default function LoginPage() {
           >
             <Image src="/logo.png" alt="Roscap" fill className="object-contain" />
           </motion.div>
-          <p className="font-display text-5xl font-light italic tracking-[0.15em] text-gold-gradient">
-            ROSCAP
-          </p>
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: '4rem' }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="h-px bg-gradient-to-r from-transparent via-[#c9a84c]/50 to-transparent mx-auto mt-4"
-          />
-          <p className="text-[9px] uppercase tracking-[0.5em] text-[#2a4535] mt-3">
+          <p className="font-display text-5xl font-light italic text-[#0d2b1f] tracking-wide">ROSCAP</p>
+          <div className="h-px w-16 bg-gradient-to-r from-transparent via-[#c9a84c]/60 to-transparent mx-auto mt-4" />
+          <p className="text-[9px] uppercase tracking-[0.5em] text-[#7a9080] mt-3">
             Operations Platform
           </p>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
+          initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.25, duration: 0.5 }}
-          className="bg-[#0e1c17] border border-[#1e3328] rounded-2xl p-8 space-y-5 shadow-[0_24px_80px_rgba(0,0,0,0.6)]"
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="bg-white border border-[#ddd6c8] rounded-2xl p-8 space-y-5 shadow-lg"
         >
           <div className="space-y-1.5">
-            <label className="text-[10px] uppercase tracking-widest font-semibold text-[#3a5045]">
+            <label className="text-xs font-semibold text-[#3d5a4a] uppercase tracking-wider">
               Username
             </label>
             <input
@@ -99,11 +80,11 @@ export default function LoginPage() {
               onChange={(e) => setUsername(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && login()}
               placeholder="suleman or clemente"
-              className="w-full bg-[#0b1612] border border-[#1e3328] rounded-xl px-4 py-3 text-sm text-[#f0ebe0] placeholder-[#1e3328] focus:outline-none focus:border-[#c9a84c]/50 focus:ring-1 focus:ring-[#c9a84c]/15 transition-all duration-200"
+              className="w-full bg-white border border-[#ddd6c8] rounded-xl px-4 py-3 text-sm text-[#0d2b1f] placeholder-[#aaa] focus:outline-none focus:border-[#c9a84c] focus:ring-2 focus:ring-[#c9a84c]/15 transition-all"
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] uppercase tracking-widest font-semibold text-[#3a5045]">
+            <label className="text-xs font-semibold text-[#3d5a4a] uppercase tracking-wider">
               Password
             </label>
             <input
@@ -112,7 +93,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && login()}
               placeholder="••••••••"
-              className="w-full bg-[#0b1612] border border-[#1e3328] rounded-xl px-4 py-3 text-sm text-[#f0ebe0] placeholder-[#1e3328] focus:outline-none focus:border-[#c9a84c]/50 focus:ring-1 focus:ring-[#c9a84c]/15 transition-all duration-200"
+              className="w-full bg-white border border-[#ddd6c8] rounded-xl px-4 py-3 text-sm text-[#0d2b1f] placeholder-[#aaa] focus:outline-none focus:border-[#c9a84c] focus:ring-2 focus:ring-[#c9a84c]/15 transition-all"
             />
           </div>
 
@@ -120,22 +101,22 @@ export default function LoginPage() {
             <motion.p
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-xs text-red-300 bg-red-950/30 border border-red-800/30 rounded-xl px-4 py-2.5"
+              className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-2.5"
             >
               {error}
             </motion.p>
           )}
 
           <motion.button
-            whileHover={{ scale: 1.02, boxShadow: '0 8px 40px rgba(201,168,76,0.35)' }}
-            whileTap={{ scale: 0.97 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={login}
             disabled={loading || !username || !password}
-            className="w-full bg-[#c9a84c] hover:bg-[#e2c47a] text-[#0b1612] font-semibold py-3 rounded-xl text-sm transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_4px_24px_rgba(201,168,76,0.2)]"
+            className="w-full bg-[#0d2b1f] hover:bg-[#1a4030] text-white font-semibold py-3 rounded-xl text-sm transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <span className="w-3.5 h-3.5 border-2 border-[#0b1612] border-t-transparent rounded-full animate-spin" />
+                <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 Signing in
               </span>
             ) : (
@@ -144,7 +125,7 @@ export default function LoginPage() {
           </motion.button>
         </motion.div>
 
-        <p className="text-center text-[#1a2e22] text-xs mt-8 tracking-wider">
+        <p className="text-center text-[#aaa] text-xs mt-8 tracking-wider">
           Confidential · Internal Use Only
         </p>
       </motion.div>

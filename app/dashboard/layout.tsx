@@ -27,9 +27,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!user) redirect('/login');
 
   return (
-    <div className="flex h-screen bg-[#0b1612] overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#f5f0e8] overflow-hidden font-sans">
       <SidebarNav user={{ name: user.display_name, role: user.role }} />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto bg-[#f5f0e8]">
         <PageContent>{children}</PageContent>
       </main>
     </div>

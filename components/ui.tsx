@@ -3,48 +3,31 @@
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 
-export const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
-};
-export const stagger = {
-  show: { transition: { staggerChildren: 0.07 } },
-};
-export const fadeIn = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.3 } },
-};
-
 export function Card({
   children,
   className = '',
   delay = 0,
   hover = false,
-  glow = false,
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
   hover?: boolean;
-  glow?: boolean;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={hover ? { y: -3, borderColor: 'rgba(201,168,76,0.35)' } : undefined}
-      className={`
-        bg-[#132019] border border-[#1e3328] rounded-xl p-6
-        transition-all duration-300
-        ${glow ? 'shadow-[0_0_30px_rgba(201,168,76,0.06)]' : ''}
-        ${className}
-      `}
+      transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={hover ? { y: -2, boxShadow: '0 8px 32px rgba(13,43,31,0.08)' } : undefined}
+      className={`bg-white border border-[#ddd6c8] rounded-xl p-6 shadow-sm transition-all duration-300 ${className}`}
     >
       {children}
     </motion.div>
   );
 }
+
+type ButtonVariant = 'primary' | 'gold' | 'ghost' | 'danger' | 'success';
 
 export function Button({
   children,
@@ -58,7 +41,7 @@ export function Button({
   onClick,
 }: {
   children: React.ReactNode;
-  variant?: 'primary' | 'ghost' | 'danger' | 'success';
+  variant?: ButtonVariant;
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   icon?: React.ReactNode;
@@ -68,21 +51,19 @@ export function Button({
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }) {
   const base =
-    'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed select-none relative overflow-hidden';
+    'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed select-none';
   const sizes = { sm: 'px-3.5 py-1.5 text-xs', md: 'px-5 py-2.5 text-sm', lg: 'px-7 py-3 text-base' };
-  const variants = {
-    primary:
-      'bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] font-semibold shadow-[0_2px_24px_rgba(201,168,76,0.25)] hover:shadow-[0_4px_40px_rgba(201,168,76,0.4)]',
-    ghost:
-      'border border-[#2a4535] text-[#8aab95] hover:border-[#c9a84c]/50 hover:text-[#c9a84c] hover:bg-[rgba(201,168,76,0.05)] bg-transparent',
-    danger:
-      'border border-red-800/50 text-red-400 hover:bg-red-950/30 hover:border-red-700 bg-transparent',
-    success: 'bg-[#1a4a35] border border-[#2a6a4a] text-[#3d9970] hover:bg-[#1f5a40] font-medium',
+  const variants: Record<ButtonVariant, string> = {
+    primary: 'bg-[#0d2b1f] text-white hover:bg-[#1a4030] shadow-sm hover:shadow-md',
+    gold: 'bg-[#c9a84c] text-[#0d2b1f] hover:bg-[#e2c47a] font-semibold shadow-sm',
+    ghost: 'border border-[#ddd6c8] text-[#3d5a4a] hover:border-[#c9a84c] hover:text-[#0d2b1f] bg-white',
+    danger: 'border border-red-200 text-red-600 hover:bg-red-50 bg-white',
+    success: 'bg-[#f0f7f4] border border-[#2d6a4f]/20 text-[#2d6a4f] hover:bg-[#e0f0e8]',
   };
   return (
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ scale: 1.015 }}
+      whileTap={{ scale: 0.975 }}
       className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
       disabled={loading || disabled}
       type={type}
@@ -98,52 +79,71 @@ export function Button({
   );
 }
 
+export function FormField({
+  label,
+  children,
+  hint,
+  required,
+}: {
+  label: string;
+  children: React.ReactNode;
+  hint?: string;
+  required?: boolean;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-xs font-semibold text-[#3d5a4a] uppercase tracking-wider">
+        {label}
+        {required && <span className="text-red-400 ml-0.5">*</span>}
+      </label>
+      {children}
+      {hint && <p className="text-xs text-[#7a9080]">{hint}</p>}
+    </div>
+  );
+}
+
 export function Input({
   label,
   hint,
   error,
+  required,
   className = '',
   ...props
 }: {
   label?: string;
   hint?: string;
   error?: string;
+  required?: boolean;
   className?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
   const [focused, setFocused] = useState(false);
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-[10px] uppercase tracking-widest font-semibold text-[#4a7060]">
+        <label className="text-xs font-semibold text-[#3d5a4a] uppercase tracking-wider">
           {label}
+          {required && <span className="text-red-400 ml-0.5">*</span>}
         </label>
       )}
-      <div
-        className={`relative rounded-lg transition-all duration-200 ${focused ? 'ring-1 ring-[#c9a84c]/25' : ''}`}
-      >
-        <input
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          className={`
-            w-full bg-[#0e1c17] border rounded-lg px-4 py-2.5 text-sm
-            text-[#f0ebe0] placeholder-[#2a4535]
-            focus:outline-none transition-all duration-200
-            ${error ? 'border-red-700' : focused ? 'border-[#c9a84c]/50' : 'border-[#1e3328]'}
-            ${className}
-          `}
-          {...props}
-        />
-      </div>
-      {hint && <p className="text-xs text-[#4a7060]">{hint}</p>}
-      {error && (
-        <motion.p
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-xs text-red-400"
-        >
-          {error}
-        </motion.p>
-      )}
+      <input
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className={`
+          w-full bg-white border rounded-lg px-4 py-2.5 text-sm text-[#0d2b1f]
+          placeholder-[#aaa] transition-all duration-150
+          ${
+            error
+              ? 'border-red-400 focus:border-red-400 focus:ring-2 focus:ring-red-100'
+              : focused
+                ? 'border-[#c9a84c] ring-2 ring-[#c9a84c]/15'
+                : 'border-[#ddd6c8]'
+          }
+          ${className}
+        `}
+        {...props}
+      />
+      {hint && <p className="text-xs text-[#7a9080]">{hint}</p>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 }
@@ -151,34 +151,36 @@ export function Input({
 export function Textarea({
   label,
   hint,
+  required,
   className = '',
   ...props
 }: {
   label?: string;
   hint?: string;
+  required?: boolean;
   className?: string;
 } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   const [focused, setFocused] = useState(false);
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-[10px] uppercase tracking-widest font-semibold text-[#4a7060]">
+        <label className="text-xs font-semibold text-[#3d5a4a] uppercase tracking-wider">
           {label}
+          {required && <span className="text-red-400 ml-0.5">*</span>}
         </label>
       )}
       <textarea
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         className={`
-          w-full bg-[#0e1c17] border rounded-lg px-4 py-3 text-sm
-          text-[#f0ebe0] placeholder-[#2a4535] resize-none
-          focus:outline-none transition-all duration-200
-          ${focused ? 'border-[#c9a84c]/50 ring-1 ring-[#c9a84c]/20' : 'border-[#1e3328]'}
+          w-full bg-white border rounded-lg px-4 py-3 text-sm text-[#0d2b1f]
+          placeholder-[#aaa] resize-none transition-all duration-150
+          ${focused ? 'border-[#c9a84c] ring-2 ring-[#c9a84c]/15' : 'border-[#ddd6c8]'}
           ${className}
         `}
         {...props}
       />
-      {hint && <p className="text-xs text-[#4a7060]">{hint}</p>}
+      {hint && <p className="text-xs text-[#7a9080]">{hint}</p>}
     </div>
   );
 }
@@ -186,26 +188,29 @@ export function Textarea({
 export function Select({
   label,
   options,
+  required,
   className = '',
   ...props
 }: {
   label?: string;
   options: { value: string; label: string }[];
+  required?: boolean;
   className?: string;
 } & React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-[10px] uppercase tracking-widest font-semibold text-[#4a7060]">
+        <label className="text-xs font-semibold text-[#3d5a4a] uppercase tracking-wider">
           {label}
+          {required && <span className="text-red-400 ml-0.5">*</span>}
         </label>
       )}
       <select
-        className={`w-full bg-[#0e1c17] border border-[#1e3328] rounded-lg px-4 py-2.5 text-sm text-[#f0ebe0] focus:outline-none focus:border-[#c9a84c]/50 focus:ring-1 focus:ring-[#c9a84c]/20 transition-all duration-200 cursor-pointer ${className}`}
+        className={`w-full bg-white border border-[#ddd6c8] rounded-lg px-4 py-2.5 text-sm text-[#0d2b1f] focus:outline-none focus:border-[#c9a84c] focus:ring-2 focus:ring-[#c9a84c]/15 transition-all duration-150 cursor-pointer ${className}`}
         {...props}
       >
         {options.map((o) => (
-          <option key={o.value} value={o.value} className="bg-[#132019] text-[#f0ebe0]">
+          <option key={o.value} value={o.value}>
             {o.label}
           </option>
         ))}
@@ -214,76 +219,31 @@ export function Select({
   );
 }
 
-const badgeMap = {
-  gold: 'bg-amber-950/60  text-amber-300   border-amber-800/50',
-  green: 'bg-emerald-950/60 text-emerald-300 border-emerald-800/50',
-  red: 'bg-red-950/60    text-red-300     border-red-800/50',
-  grey: 'bg-[#1a2e22]     text-[#8aab95]  border-[#1e3328]',
-  blue: 'bg-sky-950/60    text-sky-300     border-sky-800/50',
-  purple: 'bg-purple-950/60 text-purple-300  border-purple-800/50',
+const badgeMap: Record<string, string> = {
+  gold: 'bg-amber-50   text-amber-700   border-amber-200',
+  green: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  red: 'bg-red-50     text-red-600     border-red-200',
+  grey: 'bg-gray-50    text-gray-600    border-gray-200',
+  blue: 'bg-sky-50     text-sky-700     border-sky-200',
+  orange: 'bg-orange-50  text-orange-700  border-orange-200',
 };
 
 export function Badge({
   label,
   variant = 'grey',
   dot = false,
-  pulse = false,
 }: {
   label: string;
-  variant?: keyof typeof badgeMap;
+  variant?: string;
   dot?: boolean;
-  pulse?: boolean;
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${badgeMap[variant]}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${badgeMap[variant] || badgeMap.grey}`}
     >
-      {dot && (
-        <span className="relative flex w-1.5 h-1.5">
-          {pulse && (
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50 bg-current" />
-          )}
-          <span className="relative inline-flex rounded-full w-1.5 h-1.5 bg-current" />
-        </span>
-      )}
+      {dot && <span className="w-1.5 h-1.5 rounded-full bg-current" />}
       {label}
     </span>
-  );
-}
-
-export function StatCard({
-  label,
-  value,
-  sub,
-  trend,
-  delay = 0,
-}: {
-  label: string;
-  value: string | number;
-  sub?: string;
-  trend?: 'up' | 'down';
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -3, borderColor: 'rgba(201,168,76,0.3)' }}
-      className="bg-[#132019] border border-[#1e3328] rounded-xl p-6 transition-all duration-300 cursor-default group"
-    >
-      <p className="text-[10px] uppercase tracking-widest text-[#4a7060] mb-3 group-hover:text-[#8aab95] transition-colors">
-        {label}
-      </p>
-      <p className="font-display text-4xl font-light text-[#f0ebe0]">{value}</p>
-      {sub && (
-        <p className="text-xs text-[#4a7060] mt-2 flex items-center gap-1">
-          {trend === 'up' && <span className="text-emerald-400">↑</span>}
-          {trend === 'down' && <span className="text-red-400">↓</span>}
-          {sub}
-        </p>
-      )}
-    </motion.div>
   );
 }
 
@@ -298,25 +258,24 @@ export function PageHeader({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -10 }}
+      initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="flex items-start justify-between mb-8"
     >
       <div>
-        <h1 className="font-display text-[2.2rem] font-light italic tracking-wide text-[#f0ebe0] leading-tight">
+        <h1 className="font-display text-[2rem] font-light italic text-[#0d2b1f] leading-tight">
           {title}
         </h1>
-        {subtitle && <p className="text-sm text-[#4a7060] mt-1.5">{subtitle}</p>}
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: '3rem' }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="h-px bg-gradient-to-r from-[#c9a84c]/50 to-transparent mt-3"
-        />
+        {subtitle && <p className="text-sm text-[#7a9080] mt-1">{subtitle}</p>}
+        <div className="h-px w-12 bg-gradient-to-r from-[#c9a84c] to-transparent mt-3" />
       </div>
       {action && (
-        <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+        <motion.div
+          initial={{ opacity: 0, x: 8 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.15 }}
+        >
           {action}
         </motion.div>
       )}
@@ -324,8 +283,30 @@ export function PageHeader({
   );
 }
 
-export function Divider({ className = '' }: { className?: string }) {
-  return <div className={`h-px bg-[#1e3328] ${className}`} />;
+export function StatCard({
+  label,
+  value,
+  sub,
+  delay = 0,
+}: {
+  label: string;
+  value: string | number;
+  sub?: string;
+  delay?: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -2, boxShadow: '0 8px 24px rgba(13,43,31,0.08)' }}
+      className="bg-white border border-[#ddd6c8] rounded-xl p-6 shadow-sm transition-all duration-300"
+    >
+      <p className="text-xs font-semibold uppercase tracking-wider text-[#7a9080] mb-2">{label}</p>
+      <p className="font-display text-4xl font-light text-[#0d2b1f]">{value}</p>
+      {sub && <p className="text-xs text-[#7a9080] mt-2">{sub}</p>}
+    </motion.div>
+  );
 }
 
 export function EmptyState({
@@ -339,20 +320,28 @@ export function EmptyState({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.97 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       className="flex flex-col items-center justify-center py-20 text-center"
     >
-      {icon && <p className="text-4xl mb-4 opacity-30">{icon}</p>}
-      <p className="font-display text-xl italic text-[#4a7060]">{title}</p>
-      {description && <p className="text-sm text-[#2a4535] mt-2 max-w-xs">{description}</p>}
+      {icon && <p className="text-5xl mb-4">{icon}</p>}
+      <p className="font-display text-xl italic text-[#7a9080]">{title}</p>
+      {description && <p className="text-sm text-[#aaa] mt-2 max-w-xs">{description}</p>}
     </motion.div>
   );
 }
 
-export function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`shimmer rounded-lg ${className}`} />;
+export function Divider({ className = '' }: { className?: string }) {
+  return <div className={`h-px bg-[#ddd6c8] ${className}`} />;
+}
+
+export function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3 mb-4">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#3d5a4a]">{children}</p>
+      <div className="flex-1 h-px bg-[#ddd6c8]" />
+    </div>
+  );
 }
 
 export function Toast({
@@ -365,19 +354,22 @@ export function Toast({
   onClose: () => void;
 }) {
   const styles = {
-    success: 'border-emerald-800/50 bg-emerald-950/80 text-emerald-300',
-    error: 'border-red-800/50 bg-red-950/80 text-red-300',
-    info: 'border-[#c9a84c]/30 bg-[#132019] text-[#c9a84c]',
+    success: 'border-emerald-200 bg-white text-emerald-700',
+    error: 'border-red-200 bg-white text-red-600',
+    info: 'border-[#ddd6c8] bg-white text-[#0d2b1f]',
   };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-      className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-sm text-sm font-medium shadow-xl ${styles[type]}`}
+      exit={{ opacity: 0, y: 10 }}
+      className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl border shadow-lg text-sm font-medium ${styles[type]}`}
     >
       {message}
-      <button onClick={onClose} className="opacity-50 hover:opacity-100 transition-opacity ml-2">
+      <button
+        onClick={onClose}
+        className="opacity-40 hover:opacity-80 transition-opacity ml-2 text-base"
+      >
         ✕
       </button>
     </motion.div>
