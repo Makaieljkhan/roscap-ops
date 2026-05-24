@@ -35,16 +35,29 @@ interface Reminder {
 }
 
 const HEALTH_STYLES: Record<string, string> = {
-  active: 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/50',
-  warm: 'bg-amber-950/60 text-amber-300 border border-amber-800/50',
-  at_risk: 'bg-orange-950/60 text-orange-300 border border-orange-800/50',
-  dormant: 'bg-[#1a2e22] text-[#8aab95] border border-[#1e3328]',
+  active: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  warm: 'bg-amber-50 text-amber-700 border border-amber-200',
+  at_risk: 'bg-orange-50 text-orange-700 border border-orange-200',
+  dormant: 'bg-gray-50 text-gray-600 border border-gray-200',
+};
+
+const HEALTH_STYLES_SELECTED: Record<string, string> = {
+  active: 'bg-white/20 text-white border border-white/30',
+  warm: 'bg-white/20 text-white border border-white/30',
+  at_risk: 'bg-white/20 text-white border border-white/30',
+  dormant: 'bg-white/20 text-white border border-white/30',
 };
 
 const TYPE_STYLES: Record<string, string> = {
-  client: 'bg-indigo-950/60 text-indigo-300 border border-indigo-800/50',
-  introducer: 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/50',
-  lender: 'bg-amber-950/60 text-amber-300 border border-amber-800/50',
+  client: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+  introducer: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  lender: 'bg-amber-50 text-amber-700 border border-amber-200',
+};
+
+const TYPE_STYLES_SELECTED: Record<string, string> = {
+  client: 'bg-white/20 text-white border border-white/30',
+  introducer: 'bg-white/20 text-white border border-white/30',
+  lender: 'bg-white/20 text-white border border-white/30',
 };
 
 const REMINDER_STYLES: Record<string, string> = {
@@ -75,9 +88,11 @@ function formatDate(d: string | null): string {
 
 function Row({ label, value }: { label: string; value?: string | null }) {
   return (
-    <div className="flex gap-3 text-sm">
-      <dt className="text-[#4a7060] w-28 flex-shrink-0">{label}</dt>
-      <dd className="text-[#f0ebe0]">{value || <span className="text-[#2a4535]">—</span>}</dd>
+    <div className="flex gap-3">
+      <dt className="text-[#7a9080] text-sm w-28 flex-shrink-0">{label}</dt>
+      <dd className="text-[#0d2b1f] text-sm font-medium">
+        {value || <span className="text-[#aaa] font-normal">—</span>}
+      </dd>
     </div>
   );
 }
@@ -182,12 +197,12 @@ export default function CRMPage() {
       <div className="flex-1 min-w-0 p-8 overflow-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-display text-[2.2rem] font-light italic text-[#f0ebe0]">CRM</h1>
-            <p className="text-sm text-[#4a7060] mt-0.5">{contacts.length} contact{contacts.length !== 1 ? 's' : ''}</p>
+            <h1 className="font-display text-[2.2rem] font-light italic text-[#0d2b1f]">CRM</h1>
+            <p className="text-sm text-[#7a9080] mt-0.5">{contacts.length} contact{contacts.length !== 1 ? 's' : ''}</p>
           </div>
           <Link
             href="/dashboard/crm/new"
-            className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all"
+            className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#0d2b1f] text-white hover:bg-[#1a4030] transition-all"
           >
             + Add Contact
           </Link>
@@ -225,50 +240,67 @@ export default function CRMPage() {
         )}
 
         {!loadingContacts && filteredContacts.length > 0 && (
-          <div className="bg-[#132019] rounded-xl border border-[#1e3328] shadow-sm overflow-x-auto">
+          <div className="bg-white rounded-xl border border-[#ddd6c8] shadow-sm overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Name</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Company</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Type</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Health</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Last Contact</th>
-                  <th className="text-left px-4 py-3 text-xs font-medium text-white uppercase tracking-wider">Last Deal</th>
+                  <th>Name</th>
+                  <th>Company</th>
+                  <th>Type</th>
+                  <th>Health</th>
+                  <th>Last Contact</th>
+                  <th>Last Deal</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
-                {filteredContacts.map(c => (
+              <tbody>
+                {filteredContacts.map(c => {
+                  const isSelected = selected?.id === c.id;
+                  return (
                   <tr
                     key={c.id}
                     onClick={() => handleSelectContact(c)}
-                    className={`hover:bg-[rgba(201,168,76,0.05)] transition-colors duration-100 cursor-pointer ${selected?.id === c.id ? 'bg-[rgba(201,168,76,0.06)]' : ''}`}
+                    className={`transition-colors duration-100 cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#0d2b1f] text-white'
+                        : 'hover:bg-[#f0ebe0]'
+                    }`}
                   >
-                    <td className="px-4 py-3">
-                      <span className="font-medium text-[#f0ebe0]">{c.full_name}</span>
+                    <td>
+                      <span className={`font-medium ${isSelected ? 'text-white' : 'text-[#0d2b1f]'}`}>{c.full_name}</span>
                       {c.preferred_name && c.preferred_name !== c.full_name && (
-                        <p className="text-xs text-[#4a7060] mt-0.5">{c.preferred_name}</p>
+                        <p className={`text-xs mt-0.5 ${isSelected ? 'text-white/80' : 'text-[#7a9080]'}`}>{c.preferred_name}</p>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[#4a7060]">{c.company ?? <span className="text-gray-300">—</span>}</td>
-                    <td className="px-4 py-3">
+                    <td className={isSelected ? 'text-white' : 'text-[#3d5a4a]'}>
+                      {c.company ?? <span className={isSelected ? 'text-white/60' : 'text-[#aaa]'}>—</span>}
+                    </td>
+                    <td>
                       {c.contact_type ? (
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${TYPE_STYLES[c.contact_type] ?? 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize border ${
+                          isSelected
+                            ? TYPE_STYLES_SELECTED[c.contact_type] ?? 'bg-white/20 text-white border-white/30'
+                            : TYPE_STYLES[c.contact_type] ?? 'bg-gray-50 text-gray-600 border-gray-200'
+                        }`}>
                           {c.contact_type}
                         </span>
-                      ) : <span className="text-gray-300 text-xs">—</span>}
+                      ) : <span className={`text-xs ${isSelected ? 'text-white/60' : 'text-[#aaa]'}`}>—</span>}
                     </td>
-                    <td className="px-4 py-3">
+                    <td>
                       {c.relationship_health ? (
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${HEALTH_STYLES[c.relationship_health] ?? 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${
+                          isSelected
+                            ? HEALTH_STYLES_SELECTED[c.relationship_health] ?? 'bg-white/20 text-white border-white/30'
+                            : HEALTH_STYLES[c.relationship_health] ?? 'bg-gray-50 text-gray-600 border-gray-200'
+                        }`}>
                           {c.relationship_health.replace('_', ' ')}
                         </span>
-                      ) : <span className="text-gray-300 text-xs">—</span>}
+                      ) : <span className={`text-xs ${isSelected ? 'text-white/60' : 'text-[#aaa]'}`}>—</span>}
                     </td>
-                    <td className="px-4 py-3 text-[#4a7060] text-xs whitespace-nowrap">{formatDate(c.last_contact_date)}</td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{formatMoney(c.last_deal_size)}</td>
+                    <td className={`text-xs whitespace-nowrap ${isSelected ? 'text-white' : 'text-[#7a9080]'}`}>{formatDate(c.last_contact_date)}</td>
+                    <td className={`whitespace-nowrap ${isSelected ? 'text-white' : 'text-[#0d2b1f]'}`}>{formatMoney(c.last_deal_size)}</td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -277,19 +309,19 @@ export default function CRMPage() {
 
       {/* ── Right Panel: Contact Detail or Reminders ── */}
       {selected ? (
-        <aside className="w-[400px] flex-shrink-0 border-l border-[#1e3328] bg-[#132019] overflow-y-auto flex flex-col">
-          <div className="sticky top-0 bg-[#132019] border-b border-[#1e3328] px-5 py-4 flex items-start justify-between gap-3">
+        <aside className="w-[400px] flex-shrink-0 border-l border-[#ddd6c8] bg-white overflow-y-auto flex flex-col shadow-lg">
+          <div className="sticky top-0 bg-white border-b border-[#ddd6c8] px-5 py-4 flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-semibold text-[#f0ebe0] truncate">{selected.full_name}</p>
+              <p className="text-[#0d2b1f] font-semibold text-lg truncate">{selected.full_name}</p>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                {selected.company && <span className="text-xs text-[#4a7060]">{selected.company}</span>}
+                {selected.company && <span className="text-[#3d5a4a] text-sm">{selected.company}</span>}
                 {selected.contact_type && (
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${TYPE_STYLES[selected.contact_type] ?? 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize border ${TYPE_STYLES[selected.contact_type] ?? 'bg-gray-50 text-gray-600 border-gray-200'}`}>
                     {selected.contact_type}
                   </span>
                 )}
                 {selected.relationship_health && (
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${HEALTH_STYLES[selected.relationship_health] ?? 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${HEALTH_STYLES[selected.relationship_health] ?? 'bg-gray-50 text-gray-600 border-gray-200'}`}>
                     {selected.relationship_health.replace('_', ' ')}
                   </span>
                 )}
@@ -297,7 +329,7 @@ export default function CRMPage() {
             </div>
             <button
               onClick={() => { setSelected(null); setConfirmDelete(false); }}
-              className="text-[#4a7060] hover:text-gray-600 flex-shrink-0 mt-0.5 transition-colors"
+              className="text-[#7a9080] hover:text-[#0d2b1f] flex-shrink-0 mt-0.5 transition-colors"
               aria-label="Close panel"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -311,13 +343,13 @@ export default function CRMPage() {
             <div className="flex items-center gap-2">
               <Link
                 href={`/dashboard/crm/${selected.id}/edit`}
-                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] transition-all"
+                className="inline-flex items-center px-4 py-2 text-sm rounded-lg bg-[#c9a84c] text-[#0d2b1f] font-semibold hover:bg-[#e2c47a] transition-all"
               >
                 Edit
               </Link>
               {confirmDelete ? (
                 <div className="flex items-center gap-2 flex-1">
-                  <p className="text-xs text-gray-600 flex-1">Delete {selected.full_name}? This cannot be undone.</p>
+                  <p className="text-xs text-[#3d5a4a] flex-1">Delete {selected.full_name}? This cannot be undone.</p>
                   <button
                     onClick={handleDelete}
                     disabled={deleting}
@@ -335,7 +367,7 @@ export default function CRMPage() {
               ) : (
                 <button
                   onClick={() => setConfirmDelete(true)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-red-500 border border-red-200 hover:bg-red-50 transition-colors"
                 >
                   Delete
                 </button>
@@ -343,7 +375,7 @@ export default function CRMPage() {
             </div>
 
             <section>
-              <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Contact Details</h3>
+              <h3 className="text-[#c9a84c] text-xs font-bold uppercase tracking-widest mb-3">Contact Details</h3>
               <dl className="space-y-2">
                 <Row label="Email" value={selected.email} />
                 <Row label="Phone" value={selected.phone} />
@@ -354,7 +386,7 @@ export default function CRMPage() {
             </section>
 
             <section>
-              <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-3">Last Deal</h3>
+              <h3 className="text-[#c9a84c] text-xs font-bold uppercase tracking-widest mb-3">Last Deal</h3>
               <dl className="space-y-2">
                 <Row label="Type" value={selected.last_deal_type} />
                 <Row label="Size" value={formatMoney(selected.last_deal_size)} />
@@ -364,19 +396,19 @@ export default function CRMPage() {
 
             {selected.pipeline_note && (
               <section>
-                <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-2">Pipeline Note</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">{selected.pipeline_note}</p>
+                <h3 className="text-[#c9a84c] text-xs font-bold uppercase tracking-widest mb-2">Pipeline Note</h3>
+                <p className="text-[#0d2b1f] text-sm leading-relaxed">{selected.pipeline_note}</p>
               </section>
             )}
 
             {selected.notes && (
               <section>
-                <h3 className="text-[10px] font-semibold text-[#C9A84C] uppercase tracking-widest mb-2">Notes</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">{selected.notes}</p>
+                <h3 className="text-[#c9a84c] text-xs font-bold uppercase tracking-widest mb-2">Notes</h3>
+                <p className="text-[#0d2b1f] text-sm leading-relaxed">{selected.notes}</p>
               </section>
             )}
 
-            <p className="text-xs text-gray-300 pb-2">
+            <p className="text-[#7a9080] text-xs pb-2">
               Added {new Date(selected.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
