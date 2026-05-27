@@ -273,8 +273,8 @@ export default function LenderCommentsTable({ lenders, deleteAction }: Props) {
         </table>
       </div>
 
-      {mounted &&
-        createPortal(
+      {mounted
+        ? createPortal(
           <>
             <div
               className={`fixed inset-0 z-40 transition-opacity duration-300 ${panelOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
@@ -291,7 +291,11 @@ export default function LenderCommentsTable({ lenders, deleteAction }: Props) {
             <div
               role="dialog"
               aria-modal="true"
-              aria-label={selectedLender ? `Notes for ${selectedLender.lender_name}` : 'Lender notes'}
+              aria-label={
+                selectedLender
+                  ? 'Notes for ' + selectedLender.lender_name
+                  : 'Lender notes'
+              }
               style={{
                 position: 'fixed',
                 top: 0,
@@ -409,7 +413,8 @@ export default function LenderCommentsTable({ lenders, deleteAction }: Props) {
             </div>
           </>,
           document.body
-        )}
+        )
+        : null}
     </>
   );
 }
@@ -428,7 +433,7 @@ function stripMarkdown(text: string): string {
     .replace(/\*(.+?)\*/g, '$1')
     .replace(/_(.+?)_/g, '$1')
     .replace(/~~(.+?)~~/g, '$1')
-    .replace(/`([^`]+)`/g, '$1')
+    .replace(new RegExp('`([^`]+)`', 'g'), '$1')
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/^#{1,6}\s+/gm, '')
     .replace(/^>\s?/gm, '')
