@@ -87,7 +87,7 @@ export default function LenderCommentsTable({ lenders, deleteAction }: Props) {
       const res = await fetch(`/api/lenders/${selectedLender.id}/summarise`, { method: 'POST' });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Failed to generate summary');
-      setSummary(data.summary ?? '');
+      setSummary(stripMarkdown(data.summary ?? ''));
     } catch (err: unknown) {
       setSummaryError(err instanceof Error ? err.message : 'Failed to generate summary');
       setSummary('');
@@ -239,68 +239,68 @@ export default function LenderCommentsTable({ lenders, deleteAction }: Props) {
 
       <div
         className={`fixed inset-0 z-40 transition-opacity duration-300 ${panelOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        aria-hidden={!panelOpen}
       >
         <button
+          type="button"
           aria-label="Close panel overlay"
-          className="absolute inset-0 bg-[#0b1612]/50 backdrop-blur-[1px]"
+          className="absolute inset-0 bg-black/30"
           onClick={handleClose}
         />
       </div>
 
       <aside
-        className={`fixed top-0 right-0 z-50 h-full w-full max-w-xl bg-[#0e1c17] border-l border-[#1e3328] shadow-2xl transition-transform duration-300 ease-out ${panelOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={selectedLender ? `Notes for ${selectedLender.lender_name}` : 'Lender notes'}
+        className={`fixed top-0 right-0 z-50 h-screen w-[400px] max-w-[100vw] overflow-x-hidden bg-white border-l border-[#E8E4DC] shadow-[-8px_0_24px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out ${panelOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="h-full flex flex-col">
-          <div className="px-6 py-5 border-b border-[#1e3328] flex items-start justify-between gap-3">
-            <div>
-              <h2 className="font-display text-2xl font-light italic text-[#f0ebe0]">
-                {selectedLender?.lender_name ?? 'Lender Notes'}
-              </h2>
-            </div>
+          <div className="flex-shrink-0 px-5 py-4 border-b border-[#E8E4DC] bg-[#FAF8F4] flex items-start justify-between gap-3">
+            <h2 className="font-display text-[1.65rem] font-light leading-tight text-[#0d2b1f] pr-2">
+              {selectedLender?.lender_name ?? 'Lender Notes'}
+            </h2>
             <button
+              type="button"
               onClick={handleClose}
-              className="text-[#4a7060] hover:text-[#c9a84c] transition-colors text-xl leading-none"
+              className="flex-shrink-0 text-[#8f8f8f] hover:text-[#555] transition-colors text-xl leading-none"
               aria-label="Close comments panel"
             >
               ×
             </button>
           </div>
 
-          <div className="px-6 pt-5 pb-4 border-b border-[#1e3328]">
+          <div className="flex-shrink-0 px-5 py-4 border-b border-[#E8E4DC] bg-white">
             <button
+              type="button"
               onClick={handleSummarise}
               disabled={!selectedLender || summaryLoading}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] disabled:opacity-50 transition-all"
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-md border border-[#c9a84c] text-[#8b6e1f] hover:bg-[#fff8e5] disabled:opacity-50 transition-colors"
             >
               {summaryLoading && (
-                <span className="w-3.5 h-3.5 border-2 border-[#0b1612] border-t-transparent rounded-full animate-spin" />
+                <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
               )}
               AI Summarise
             </button>
-            {summaryError && <p className="mt-3 text-sm text-red-300">{summaryError}</p>}
+            {summaryError && <p className="mt-3 text-sm text-red-600">{summaryError}</p>}
             {summary && (
-              <p className="mt-3 text-sm leading-relaxed text-[#d6e0d9] bg-[#132019] border border-[#1e3328] rounded-lg p-3">
+              <p className="mt-3 text-[14px] leading-relaxed text-[#3d5a4a] bg-[#F5F5F0] border-l-4 border-[#c9a84c] px-3 py-3">
                 {summary}
               </p>
             )}
           </div>
 
-          <div className="flex-1 min-h-0 overflow-y-auto px-6 py-5 space-y-3">
-            {commentsLoading && <p className="text-sm text-[#4a7060]">Loading notes...</p>}
-            {commentsError && <p className="text-sm text-red-300">{commentsError}</p>}
+          <div className="flex-1 min-h-0 overflow-y-auto px-5 py-2 bg-white">
+            {commentsLoading && <p className="text-sm text-[#7a9080]">Loading notes...</p>}
+            {commentsError && <p className="text-sm text-red-600">{commentsError}</p>}
             {commentEmpty && (
-              <p className="text-sm text-[#4a7060]">No notes yet. Add the first one below.</p>
+              <p className="text-sm text-[#7a9080] py-4">No notes yet. Add the first one below.</p>
             )}
             {comments.map((comment) => (
-              <article
-                key={comment.id}
-                className="bg-[#132019] border border-[#1e3328] rounded-lg px-4 py-3"
-              >
-                <div className="flex items-center justify-between gap-3 mb-1.5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#c9a84c]">
-                    {comment.author}
-                  </p>
-                  <time className="text-xs text-[#4a7060]">
+              <article key={comment.id} className="py-3 border-b border-[#E8E4DC] last:border-b-0">
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="text-xs font-bold text-[#0d2b1f]">{comment.author}</p>
+                  <time className="text-[11px] text-[#8f8f8f] whitespace-nowrap">
                     {new Date(comment.created_at).toLocaleString('en-GB', {
                       day: '2-digit',
                       month: 'short',
@@ -310,31 +310,37 @@ export default function LenderCommentsTable({ lenders, deleteAction }: Props) {
                     })}
                   </time>
                 </div>
-                <p className="text-sm text-[#d6e0d9] whitespace-pre-wrap">{comment.content}</p>
+                <p className="mt-1.5 text-sm text-[#4f4f4f] whitespace-pre-wrap leading-relaxed">
+                  {comment.content}
+                </p>
               </article>
             ))}
           </div>
 
-          <div className="border-t border-[#1e3328] px-6 py-4 bg-[#0b1612]">
+          <div className="flex-shrink-0 border-t border-[#E8E4DC] bg-white px-5 py-4">
             <div className="space-y-3">
+              <label className="block text-xs font-medium text-[#3d5a4a]">
+                Your name
+              </label>
+              <input
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                placeholder="e.g. Suleman"
+                className="w-full h-9 px-3 text-sm text-[#0d2b1f] bg-white border border-[#E8E4DC] rounded-md focus:outline-none focus:border-[#c9a84c]"
+              />
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Add a note for this lender..."
-                rows={4}
-                className="w-full bg-[#132019] border border-[#1e3328] rounded-lg px-3 py-2.5 text-sm text-[#f0ebe0] placeholder:text-[#4a7060] focus:outline-none focus:border-[#c9a84c]/50 resize-none"
+                rows={3}
+                className="w-full px-3 py-2 text-sm text-[#0d2b1f] bg-white border border-[#E8E4DC] rounded-md resize-none focus:outline-none focus:border-[#c9a84c]"
               />
-              <div className="flex items-center gap-3">
-                <input
-                  value={author}
-                  onChange={(e) => setAuthor(e.target.value)}
-                  placeholder="Your name"
-                  className="flex-1 bg-[#132019] border border-[#1e3328] rounded-lg px-3 py-2 text-sm text-[#f0ebe0] placeholder:text-[#4a7060] focus:outline-none focus:border-[#c9a84c]/50"
-                />
+              <div className="flex justify-end">
                 <button
+                  type="button"
                   onClick={handleSubmitComment}
                   disabled={submitting || !author.trim() || !content.trim() || !selectedLender}
-                  className="px-4 py-2 text-sm font-semibold rounded-lg bg-[#c9a84c] text-[#0b1612] hover:bg-[#e2c47a] disabled:opacity-50 transition-all"
+                  className="inline-flex items-center justify-center px-3.5 py-1.5 text-xs font-semibold rounded-md bg-[#0d2b1f] text-white hover:bg-[#1a4030] disabled:opacity-50 transition-colors"
                 >
                   {submitting ? 'Submitting...' : 'Submit'}
                 </button>
@@ -351,4 +357,23 @@ function formatMoney(n: number): string {
   if (n >= 1_000_000) return `£${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `£${(n / 1_000).toFixed(0)}k`;
   return `£${n}`;
+}
+
+/** Strip markdown so AI summaries render as plain text. */
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/__(.+?)__/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/_(.+?)_/g, '$1')
+    .replace(/~~(.+?)~~/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^>\s?/gm, '')
+    .replace(/^[\s]*[-*+]\s+/gm, '')
+    .replace(/^[\s]*\d+\.\s+/gm, '')
+    .replace(/[*#`~]/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
