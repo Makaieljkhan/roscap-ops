@@ -29,7 +29,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div className="flex h-screen bg-[#f5f0e8] overflow-hidden font-sans">
       <SidebarNav user={{ name: user.display_name, role: user.role }} />
-      <main className="flex-1 overflow-y-auto bg-[#f5f0e8]">
+      <main data-dashboard-scroll className="flex-1 overflow-y-auto bg-[#f5f0e8]">
         <PageContent>{children}</PageContent>
       </main>
     </div>
