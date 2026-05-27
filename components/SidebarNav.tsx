@@ -9,7 +9,6 @@ import { useState } from 'react';
 const nav = [
   { label: 'Lender Intelligence', href: '/dashboard/lenders', icon: '◈' },
   { label: 'Deal Drafting', href: '/dashboard/drafting', icon: '✦' },
-  { label: 'Inbound Handler', href: '/dashboard/inbound', icon: '⬡' },
   { label: 'CRM', href: '/dashboard/crm', icon: '◎' },
 ];
 

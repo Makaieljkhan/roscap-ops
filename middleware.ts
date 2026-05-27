@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const LEGACY_PREFIXES = ['/lenders', '/crm', '/inbound', '/drafting'] as const;
+const LEGACY_PREFIXES = ['/lenders', '/crm', '/drafting'] as const;
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -24,5 +24,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/lenders/:path*', '/crm/:path*', '/inbound/:path*', '/drafting/:path*', '/lenders', '/crm', '/inbound', '/drafting'],
+  matcher: ['/dashboard/:path*', '/login', '/lenders/:path*', '/crm/:path*', '/drafting/:path*', '/lenders', '/crm', '/drafting'],
 };
